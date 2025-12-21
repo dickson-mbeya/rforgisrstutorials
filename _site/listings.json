@@ -3,6 +3,7 @@
     "listing": "/tutorials/index.html",
     "items": [
       "/tutorials/queries.html",
+      "/tutorials/about.html",
       "/tutorials/geometric-operations.html",
       "/tutorials/getting-started.html",
       "/tutorials/install-packages.html",

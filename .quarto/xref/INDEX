@@ -28,5 +28,8 @@
   },
   "tutorials/about.qmd": {
     "about.html": "c08e2aed"
+  },
+  "tutorials/getting-started.qmd": {
+    "getting-started.html": "8d0c36b1"
   }
 }

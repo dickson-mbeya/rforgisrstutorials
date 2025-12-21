@@ -1,1 +1,1 @@
-Sitemap: https://<your-user>.github.io/<your-repo>/sitemap.xml
+Sitemap: https://dicksonmbeya.com/rforgisrstutorials/sitemap.xml
