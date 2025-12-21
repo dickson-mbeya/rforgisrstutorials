@@ -1,0 +1,32 @@
+---
+title: "Dickson Mbeya"
+about:
+  id: hero-heading
+  template: solana
+  image: ../assets/images/dickson.png
+  links:
+    - icon: linkedin
+      text: linkedin
+      href: https://www.linkedin.com/in/dickson-mbeya/
+    - icon: github
+      text: Github
+      href: https://github.com/dickson-mbeya
+---
+
+::: {#hero-heading}
+Dickson Mbeya is the founder of the R for GIS and Remote Sensing Mentorship Program. He is an award-winning cartographer and an experienced geospatial professional with more than a decade of experience in utilizing geospatial technologies to derive information products.
+
+He currently works as Cartography Technician with the Malawi University of Science and Technology. He has have 8 years experience teaching GIS and Remote Sensing in a higher learning institution. Dickson is an expert in utilizing industry standard commercial and open source GIS, mapping and satellite image processing software and programming languages.
+
+## Education
+
+Malawi University of Science and Technology, Malawi \| MSc in Biodiversity Informatics \| 2024
+
+University of Malawi \| BSc in Earth Sciences \| 2015
+
+## Experience
+
+Malawi University of Science and Teachnology \| Project Manager and Spatial Assessment Lead \| January 2023 - present
+
+Malawi University of Science and Technology \| Cartography Technician \| Sept 2017 - present
+:::

@@ -1,0 +1,38 @@
+---
+title: " Install GIS and remote sensing R packages"
+page-layout: article
+---
+
+To prepare for the tutorials you will install core packages used in these tutorials for GIS and Remote Sensing.
+
+```{r}
+# install.packages("sf")       # vector data package
+# install.packages("terra")    # raster data package
+# install.packages("dplyr")    # tidyverse package for data frame manipulation/ working with attribute data
+# install.packages("tmap")     # for making maps
+# install.packages("leaflet")  # for interactive visualization of maps
+# install.packages("ggplot2")  # tidyverse data visualization package
+```
+
+Alternatively, you would install all the packages in a single line of code.
+
+```{r}
+# install.packages(c("sf", "terra", "stars", "ggplot2"))
+```
+
+Confirm that you have successfully installed the packages:
+
+```{r}
+library(sf)
+library(terra)
+library(dplyr)
+library(tmap)
+library(leaflet)
+library(ggplot2)
+```
+
+You can also check all the installed packages by running the code:
+
+```{r}
+# installed.packages()
+```

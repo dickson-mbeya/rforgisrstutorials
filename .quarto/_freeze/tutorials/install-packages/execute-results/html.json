@@ -1,0 +1,15 @@
+{
+  "hash": "e602c0cf936daef74a2cbdec036ba2d7",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \" Install GIS and remote sensing R packages\"\npage-layout: article\n---\n\n\n\nTo prepare for the tutorials you will install core packages used in these tutorials for GIS and Remote Sensing.\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# install.packages(\"sf\")       # vector data package\n# install.packages(\"terra\")    # raster data package\n# install.packages(\"dplyr\")    # tidyverse package for data frame manipulation/ working with attribute data\n# install.packages(\"tmap\")     # for making maps\n# install.packages(\"leaflet\")  # for interactive visualization of maps\n# install.packages(\"ggplot2\")  # tidyverse data visualization package\n```\n:::\n\n\n\nAlternatively, you would install all the packages in a single line of code.\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# install.packages(c(\"sf\", \"terra\", \"stars\", \"ggplot2\"))\n```\n:::\n\n\n\nConfirm that you have successfully installed the packages:\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(sf)\nlibrary(terra)\nlibrary(dplyr)\nlibrary(tmap)\nlibrary(leaflet)\nlibrary(ggplot2)\n```\n:::\n\n\n\nYou can also check all the installed packages by running the code:\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# installed.packages()\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

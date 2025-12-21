@@ -1,0 +1,15 @@
+[
+  {
+    "listing": "/tutorials/index.html",
+    "items": [
+      "/tutorials/queries.html",
+      "/tutorials/geometric-operations.html",
+      "/tutorials/getting-started.html",
+      "/tutorials/install-packages.html",
+      "/tutorials/install-r.html",
+      "/tutorials/make-map.html",
+      "/tutorials/r-basics.html",
+      "/tutorials/map-projections.html"
+    ]
+  }
+]

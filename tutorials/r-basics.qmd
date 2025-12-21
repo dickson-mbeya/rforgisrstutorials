@@ -1,0 +1,367 @@
+---
+title: "R basics"
+page-layout: article
+---
+
+## Introduction to R
+
+In this tutorial, we lay the foundation for working with R by exploring its core concepts and essential tools. Our focus is on building a strong understanding of the R environment and basic operations that will support advanced geospatial and remote sensing tasks in later tutorials. Specifically, we cover how to set up a working directory, install and load packages, create and manage variables, and understand R data types and data structures. We also introduce R functions, demonstrate how to create basic plots for data visualization.
+
+## What you will learn:
+
+-   Understand the R environment and set up a working directory.
+-   Learn how to install and load packages for extended functionality.
+-   Explore variable creation, data types, and data structures in R.
+-   Gain familiarity with writing and using functions in R.
+-   Create simple plots for basic data visualization.
+
+## What is R?
+
+R is a popular programming language used for statistical computing and graphical presentation.
+
+## Why use R?
+
+-   It is a great resource for data analysis, data visualization, data science and machine learning
+-   It provides many statistical techniques (such as statistical tests, classification, clustering and data reduction)
+-   It is easy to draw graphs in R, like pie charts, histograms, box plot, scatter plot, etc++
+-   It works on different platforms (Windows, Mac, Linux)
+-   It is open-source and free
+-   It has a large community support
+-   It has many packages (libraries of functions) that can be used to solve different problems
+
+### Setting working directory
+
+A working directory in R is a specific location (a folder or directory) on your computer that R uses as the default place to look for files when you try to read them into R, and where it will save files when you write them out from R. To set a working directory in we use the `setwd("path to your directory")` function.
+
+```{r}
+#setwd("C:/Users/devmbeya/Documents/rtutorials") 
+# Change C:/Users/devmbeya/Documents/rmentorshipprogram/cohort1 path to your working directory
+```
+
+The code above sets `rtutorials` folder located in the `Documents` library as a working directory.
+
+## R Variables
+
+Variables are containers for storing data values. R does not have a command for declaring a variable. A variable is created the moment you first assign a value.
+
+```{r}
+x <- 2  # assigns a value 2 to a variable x
+
+x = 2  # assigns a value 2 to a variable x
+
+assign('x', 2) # assigns a value 2 to a variable x
+
+x # print a value stored in x
+
+print(x) # print a value stored in x
+```
+
+Using an `=` variable assignment operator is discouraged because it can cause errors in some cases. It is not necessary to use `print()` function unless you are working with loops.
+
+## Try it yourself
+
+Create a variable named `height` with value `175`, and `weight` with value `68`.Then print both.
+
+```{r variable_assignment, exercise=TRUE}
+# Your code here:
+```
+
+## Basic R data types
+
+R has the following types:
+
+-   numeric: (10.5, 55, 787)
+-   integer: (1L, 55L, 100L, where the letter "L" declares this as an integer)
+-   complex: (9 + 3i, where "i" is the imaginary part)
+-   character (a.k.a. string): ("k", "R is exciting", "FALSE", "11.5")
+-   logical (a.k.a. boollean): (TRUE or FALSE)
+
+```{r}
+my_numeric <- 12.5    #my_numeric is a numeric variable
+
+my_numeric  # print my_numeric value
+
+
+my_logical <- TRUE    # my_logical is a logical(Boolean) variable
+
+my_logical # Display my_logical value
+
+country <- "Angola"   # Country is a character variable
+country
+```
+
+Characters(string or text) are closed in single('') or double quotes("")
+
+```{r}
+country <- "10"
+country   # country is still character
+```
+
+To check the data type use the class() function.
+
+```{r}
+class(my_numeric)     # check the type of a variable     
+class(country)
+```
+
+## Try it yourself
+
+-   Create a numeric variable `x` with value `3.14`.
+-   Create a character variable `y` with value `R is fun`
+-   Create a logical variable `z` with value `TRUE`.
+
+```{r data_types, exercise=TRUE}
+# Your code here:
+```
+
+## R functions
+
+A function is a block of organized, reusable code that performs a specific task. Functions are fundamental to R programming, enabling modularity, code reusability, and easier problem-solving.
+
+R provides a comprehensive set of built-in functions for various tasks, including mathematical operations, statistical analysis, data manipulation, and input/output. These functions are pre-defined and can be directly utilized without requiring the user to write the underlying code.
+
+Built-in Function are the functions that are already existing in R language and we just need to call them to use.
+
+Examples of built in functions: \* C(): combine function which combines valuesinto a vector \* sum(): adds values \* max(): returns maximum value \* min(): returns the minimun value \* seq(1:10): creates a seqiuence of numbers
+
+```{r}
+x <- c(1,2,3)    
+
+sum(x)
+
+max(x)  
+
+min(x) 
+```
+
+## R packages
+
+R packages are a collection of R functions compiled code and sample data R packages are stored under a directory called 'library' in the R environment Packages need to be installed before they can be used in R. Packages are installed using install.packages("package name")
+
+```{r}
+#install.packages("sf") #Installs the simple feature, sf, package. 
+#library()     #gets the list of installed packages
+```
+
+When a package has been installed, it has to be loaded/imported into R for it to be used. Packages are loaded using library(package name)
+
+```{r}
+library(sf)
+```
+
+## R data structures
+
+A data structure is a particular way of organizing data in a computer so that it can be used effectively. The idea is to reduce the space and time complexities of different tasks. Data structures in R programming are tools for holding multiple values. R has six data structures:
+
+#### 1. Vectors
+
+A vector is an ordered collection of basic data types of a given length. The only key thing here is all the elements of a vector must be of the identical data type e.g homogeneous data structures. Vectors are one-dimensional data structures.
+
+```{r}
+x <- c(1, 2, 3, 4, 5)
+x
+```
+
+#### 2. Lists
+
+A list is a generic object consisting of an ordered collection of objects. Lists are heterogeneous data structures. These are also one-dimensional data structures. A list can be a list of vectors, list of matrices, a list of characters and a list of functions and so on.
+
+```{r}
+studentName <- c("James", "John", "Mercy")
+studentID <- c(2020, 2030, 2040)
+yearOfStudy <- c(1, 2, 2)
+
+mylist <- list(studentName, studentID, yearOfStudy)
+mylist
+```
+
+### Try it yourself
+
+-   Create a vector `ages` containing 18, 25, 30, 45.
+-   Create a list `person` with "name=Alice", "age=25" and "is_student=TRUE".
+
+```{r create_vector_list, exercise=TRUE}
+# Your code here:
+```
+
+#### 3. Data frame
+
+Data frames are generic data objects of R which are used to store the tabular data. Data frames are the foremost popular data objects in R programming because we are comfortable in seeing the data within the tabular form. They are two-dimensional, heterogeneous data structures. These are lists of vectors of equal lengths.
+
+Data frames have the following constraints placed upon them:
+
+-   A data-frame must have column names and every row should have a unique name.
+-   Each column must have the identical number of items.
+-   Each item in a single column must be of the same data type.
+-   Different columns may have different data types.
+-   To create a data frame we use the data.frame() function.
+-   R data structures: vector, matrix, list, data frame
+
+```{r}
+studentName <- c("James", "John", "Mercy")
+studentID <- c(2020, 2030, 2040)
+yearOfStudy <- c(1, 2, 2)
+
+myDataframe <- data.frame(studentName, studentID, yearOfStudy)
+myDataframe
+```
+
+### Try it yourself
+
+Create a data frame called "students" with two columns: "name = c("John", "Jane", "Mike")", "score = c(85, 90, 78)". Print the data frame.
+
+```{r create_data_frames, exercise=TRUE}
+
+# Your code here:
+
+```
+
+#### 4. Matrices
+
+A matrix is a rectangular arrangement of numbers in rows and columns. In a matrix, as we know rows are the ones that run horizontally and columns are the ones that run vertically. Matrices are two-dimensional, homogeneous data structures.
+
+```{r}
+y <- matrix (
+  c(10, 20, 30, 40, 50, 60, 70, 80, 90, 100),
+  nrow = 3, ncol = 3,
+  byrow = TRUE
+)
+
+y
+```
+
+#### 5. Arrays
+
+Arrays are the R data objects which store the data in more than two dimensions. Arrays are n-dimensional data structures. For example, if we create an array of dimensions (2, 3, 3) then it creates 3 rectangular matrices each with 2 rows and 3 columns. They are homogeneous data structures.
+
+```{r}
+myArray <- array(
+  c(10, 20, 30, 40, 50, 60, 70, 80, 90, 100),
+  dim = c(2, 2, 2)
+)
+
+myArray
+```
+
+#### 6. Factors
+
+Factors are the data objects which are used to categorize the data and store it as levels. They are useful for storing categorical data. They can store both strings and integers. They are useful to categorize unique values in columns like (“TRUE” or “FALSE”) or (“MALE” or “FEMALE”), etc..
+
+They are useful in data analysis for statistical modeling.
+
+```{r}
+myFactor <- factor(c("male", "female", "male", "female"))
+myFactor
+```
+
+### Data structures example
+
+Imagine that one you are analyzing weather data (amount of rainfall and the magnitude of temperature) recorded at a particular weather station from Monday, 16th March 2024 to Saturday, 21st March 2024. The observations recorded are as follows:
+
+##### Rainfall readings in mm
+
+-   Monday March 16 2024: 10
+-   Tuesday March 17 2024: 20
+-   Wednesday March 18 2024: 11
+-   Thursday March 19 2024: 30
+-   Friday March 20 2024: 15
+-   Saturday March 21 2024: 9
+-   Sunday March 22 2024:10
+
+#### Temperature readings in degrees Celsius
+
+-   Monday March 16 2024: 16
+-   Tuesday March 17 2024: 17
+-   Wednesday March 18 2024: 25
+-   Thursday March 19 2024: 23
+-   Friday March 20 2024: 17
+-   Saturday March 21 2024: 27
+-   Sunday March 22 2024: 13
+
+### Step one
+
+To work with this data in R, firstly create the vectors Rainfall, Temperature and Date
+
+```{r}
+rainfall <- c(10, 20, 11, 30, 15, 9, 10)
+
+max(rainfall)
+
+min(rainfall)
+
+temperature <- c(16, 17, 25, 23, 17, 27, 13)
+
+temperature
+
+min(temperature)
+
+day <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+
+day
+
+date <- as.Date(c("2024-03-16", "2024-03-17", "2024-03-18", "2024-03-19", "2024-03-20", "2024-03-21", "2024-03-22"))
+
+date
+
+class(date)
+```
+
+### Present the data in a Data Frame
+
+```{r}
+myweather <- data.frame(day,
+                        date,
+                        rainfall,
+                        temperature
+                       )
+myweather
+
+
+head(myweather)   #shows first 6 rows  
+head(myweather, 3) #shows first 3 rows
+
+# Sub-setting a data frame
+myweather[1, 2]  # returns the data frame element for the first row and second column
+
+myweather[ ,1]  # returns data frame elements for first column and all rows
+```
+
+Imagine that you want to know for which date the data was collected. You have to select the date column of the data frame
+
+```{r}
+myweather$date
+myweather[,"date"] #returns similar result
+```
+
+As you are doing your analysis, you discover that wind direction data is also crucial for the validity of the results of your analysis.
+
+#### Wind direction
+
+-   Monday March 16 2024: N
+-   Tuesday March 17 2024: SE
+-   Wednesday March 18 2024: W
+-   Thursday March 19 2024: SE
+-   Friday March 20 2024: NW
+-   Saturday March 21 2024: NW
+-   Sunday March 22 2024: SE
+
+You can add the column for wind direction to your data frame with the code chuck shown below:
+
+```{r}
+myweather$wind_direction <- c("N", "SE", "W", "SE","NW","NW", "SE" )
+
+myweather
+
+summary(myweather) #gives summary statistics for each column
+
+#You decide to come up with summary statistics for rainfall records:
+summary(myweather["rainfall"])
+
+plot(myweather[3:4]) #plots the third column(rainfall) and the fourth column(temperature)
+plot(myweather[2:3])
+```
+
+### References/Further Reading
+
+-   https://www.geeksforgeeks.org/r-language/data-structures-in-r-programming/
+-   https://www.w3schools.com/r/

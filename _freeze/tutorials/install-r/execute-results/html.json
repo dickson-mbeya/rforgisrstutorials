@@ -1,0 +1,15 @@
+{
+  "hash": "2c0a95dc29a79c63b8520c95026d0748",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Install R and RStudio\"\npage-layout: article\n---\n\n\nIn this tutorial, you will learn how to install **R** and **RStudio**, the two essential tools for working with GIS and Remote Sensing in R.\n\n------------------------------------------------------------------------\n\n## Step 1: Download R\n\nR is the programming language we will use throughout these tutorials.\n\n1.  Go to the official R website: <https://cran.r-project.org>.\n2.  Choose your operating system:\n    -   **Windows**: Click \"Download R for Windows\" → \"base\" → download the installer.\n    -   **macOS**: Click \"Download R for macOS\" → choose the latest `.pkg` file.\n    -   **Linux**: Follow the instructions for your distribution (Ubuntu, Fedora, etc.).\n3.  Run the installer and follow the default options.\n\n------------------------------------------------------------------------\n\n## Step 2: Download RStudio\n\nRStudio is an Integrated Development Environment (IDE) that makes working with R easier.\n\n1.  Visit <https://posit.co/download/rstudio-desktop/>.\n2.  Download the **free RStudio Desktop** version for your operating system.\n3.  Install RStudio using the default settings.\n\n------------------------------------------------------------------------\n\n## Step 3: Verify Installation\n\n1.  Open **RStudio**.\n\n![RStudio GUI](https://docs.posit.co/ide/user/ide/get-started/images/rstudio-panes-labeled.jpeg)\n\n-   The **Source** pane is where you can edit and save R or Python scripts or author computational documents like Quarto and R Markdown.\n\n-   The **Console pane** is used to write short interactive R commands.\n\n-   The **Environment** pane displays temporary R objects as created during that R session.\n\n-   The **Output** pane displays the plots, tables, or HTML outputs of executed code along with files saved to disk.\n\n2.  In the console, type: \\`\\`\\`r version\nThis will display the installed R version.\n\nTry a simple command\n\n\n::: {.cell}\n\n```{.r .cell-code}\n10 + 10\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 20\n```\n\n\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

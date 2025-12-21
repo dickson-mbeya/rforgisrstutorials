@@ -1,0 +1,53 @@
+---
+title: "R for GIS and Remote Sensing Tutorials"
+page-layout: article
+---
+
+Welcome to **GIS and Remote Sensing with R Tutorials** — a collection of step‑by‑step guides for learning spatial data analysis, map making, and remote sensing using the R programming language.
+
+## What you’ll find here
+
+-   **Getting Started**: Install R, RStudio, and essential spatial packages.
+-   **Vector Data Tutorials**: Work with points, lines, polygons, and perform spatial operations.
+-   **Raster Data Tutorials**: Handle satellite imagery, calculate indices, and extract raster values.
+-   **Map Making**: Create static and interactive maps with `ggplot2`, `tmap`, and `leaflet`.
+-   **Remote Sensing**: Learn NDVI, land cover classification, and change detection workflows.
+-   **Google Earth Engine**: Connect R to GEE with `rgee` for large‑scale cloud analysis.
+-   **Case Studies**: Apply your skills to real‑world problems in environment, agriculture, and urban planning.
+
+------------------------------------------------------------------------
+
+## Who is this for?
+
+These tutorials are designed for:
+
+-   Students learning GIS and remote sensing.
+-   Researchers analyzing spatial data in environmental science, agriculture, or urban studies.
+-   Professionals who want to add R to their geospatial toolkit.
+
+No prior GIS experience is required, but basic familiarity with R will help.
+
+------------------------------------------------------------------------
+
+## How to use this site
+
+-   Each tutorial is **self‑contained** and includes code snippets, explanations, and screenshots.
+-   Tutorials are grouped by category so you can jump directly to the topic you need.
+-   Follow along interactively in RStudio or VS Code for the best learning experience.
+
+------------------------------------------------------------------------
+
+## Start learning
+
+👉 Begin with the [Introduction](install-r.qmd) to understand the basics, or dive straight into the [Getting started tutorials](r-basics.qmd).
+
+## License
+
+This work is licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/deed.en_US)
+
+Under this license, you are allowed to use, share or modify the document in any way you seem fit and even make commercial use of it. You only need to give appropriate credit to the author for the original work.
+
+## About the author
+These tutorials are written and maintained by [Dickson Mbeya](https://dicksonmbeya.com).
+
+Copyright © 2025 Dickson Mbeya

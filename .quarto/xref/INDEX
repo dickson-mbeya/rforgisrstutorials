@@ -1,0 +1,32 @@
+{
+  "index.qmd": {
+    "index.html": "e0429f53"
+  },
+  "tutorials/install-r.qmd": {
+    "install-r.html": "69cf15e8"
+  },
+  "tutorials/install-packages.qmd": {
+    "install-packages.html": "9c82c11a"
+  },
+  "tutorials/make-map.qmd": {
+    "make-map.html": "00125402"
+  },
+  "tutorials/r-basics.qmd": {
+    "r-basics.html": "496dba38"
+  },
+  "tutorials/queries.qmd": {
+    "queries.html": "3e02e819"
+  },
+  "tutorials/geometric-operations.qmd": {
+    "geometric-operations.html": "d68535cb"
+  },
+  "tutorials/map-projections.qmd": {
+    "map-projections.html": "477fccec"
+  },
+  "tutorials/index.qmd": {
+    "index.html": "04dd50c8"
+  },
+  "tutorials/about.qmd": {
+    "about.html": "c08e2aed"
+  }
+}

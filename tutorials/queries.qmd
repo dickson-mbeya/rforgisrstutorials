@@ -1,0 +1,130 @@
+---
+title: "Attribute and spatial queries"
+page-layout: article
+---
+
+## Overview
+In this tutorial, you will learn how to select geographic features based on their association with non-spatial and also based on their location.
+
+## Data Exploration
+
+Set working directory
+
+```{r}
+setwd("C:/Users/devmbeya/Documents/giswithrtutorials") 
+getwd() #check the file path of the current directory
+```
+
+Load required packages
+
+```{r}
+library(sf)
+library(dplyr)
+```
+
+Read data
+
+```{r}
+africa <- st_read("../assets/data/vector/africa.shp")
+africa_project <- st_read("../assets/data/vector/africa_project.shp")
+africa_continent <- st_read("../assets/data/vector/africa_continent.shp")
+cities <- st_read("../assets/data/vector/africa_capital_cities.shp")
+roads <- st_read("../assets/data/vector/africa_roads.shp")
+```
+
+## Attribute queries
+
+GIS data comes in two forms: spatial and attribute data. Spatial data represents the aspects of geography inform of map layers. Attribute data in GIS describe the properties or characteristics of the spatial features. A school would have its spatial data represented as geographic coordinates(latitudes and longitudes) and its attribute data would include name of the school, student enrollment, number of teachers, name of district it is located in etc.
+
+Attribute queries select geographic features based on their association with attributes (non-spatial data). This is achieved by using conditions such as field names(e.g., `ADIMN`, `NAME`), operators (e.g., `<`, `>`, `=`, `==`) and values (e.g., `Malawi`, `TRUE`, `20000`).
+
+```{r}
+#| label: Explore data
+#| echo: true
+#| code-line-numbers: true
+africa #print Africa sf
+
+# Check column names, use the names() function
+names(africa)
+
+# check coordinates of the polygons
+africa$geom
+
+# Check the ADMIN column values
+africa$ADMIN
+```
+
+#### Subsetting vector data
+
+In R, you van use `dplyr` subsetting functions to select a subset of the data: rows or columns. You can use the `filter()` and `slice` functions to select rows and `select()` to subset columns.
+
+Select countries with population greater than 80 million. Use the dplyr's `filter()` function.
+
+```{r}
+# Once again explore the data
+head(africa)
+
+# Select countries with population greater than 80 million
+pop <- filter(africa, POP_EST > 80000000)
+pop
+
+# Plot the selected polygons
+plot(pop$geometry)
+```
+
+Select South Africa and Malawi polygons
+
+```{r}
+south_africa <- filter(africa, NAME_EN == 'South Africa' | NAME_EN=="Malawi")
+
+plot(south_africa$geometry)
+```
+
+Select Malawi's neighbors
+
+```{r}
+#| label: Select multiple attributes
+#| echo: true
+#| code-line-numbers: true
+malawi_and_neighb <- filter(africa, NAME_EN == 'Malawi' | NAME_EN=="Zambia" | NAME_EN == "Mozambique" | NAME_EN == "Tanzania")
+
+plot(malawi_and_neighb$geometry)
+```
+
+## Spatial queries
+
+To select features by their location, we can use topological relations between vector geometries.
+
+To select features by their **location**, we can use topological relations between vector geometries in `sf`. Common functions include:
+
+-   `st_intersects(x, y)` – returns features in `x` that **intersect** features in `y`.
+-   `st_touches(x, y)` – returns features in `x` that **touch** features in `y` (share a boundary but do not overlap).
+-   `st_overlaps(x, y)` – returns features in `x` that **overlap** features in `y` partially.
+-   `st_contains(x, y)` – returns features in `x` that **contain** features in `y`.
+-   `st_contains_properly(x, y)` – stricter version of `st_contains`.
+-   `st_covers(x, y)` – returns features in `x` that **cover** features in `y`.
+-   `st_within(x, y)` – returns features in `x` that are **within** features in `y`.
+-   `st_covered_by(x, y)` – returns features in `x` that are **covered by** features in `y`.
+-   `st_disjoint(x, y)` – returns features in `x` that **do not intersect** features in `y`.
+
+Select cities that are located within East African countries.
+
+```{r}
+#| label: Select data based on location
+#| echo: true
+#| code-line-numbers: true
+plot(cities$geometry)
+
+# Select countries within Eastern Africa
+east_africa <- filter(africa, SUBREGION == 'Eastern Africa')
+
+# Plot East African countries
+plot(east_africa$geometry)
+
+# Select and plot all eastern African cities
+east_cities <- st_intersection(x = cities, y=east_africa)
+
+plot(east_cities$geometry, add=TRUE, col='blue', pch=16)
+
+plot(cities$geometry, add=TRUE)
+```
