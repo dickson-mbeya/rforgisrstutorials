@@ -239,7 +239,7 @@
     "href": "index.html#what-youll-find-here",
     "title": "R for GIS and Remote Sensing Tutorials",
     "section": "What you’ll find here",
-    "text": "What you’ll find here\n\nGetting Started: Install R, RStudio, and essential spatial packages.\nVector Data Tutorials: Work with points, lines, polygons, and perform spatial operations.\nRaster Data Tutorials: Handle satellite imagery, calculate indices, and extract raster values.\nMap Making: Create static and interactive maps with ggplot2, tmap, and leaflet.\nRemote Sensing: Learn NDVI, land cover classification, and change detection workflows.\nGoogle Earth Engine: Connect R to GEE with rgee for large‑scale cloud analysis.\nCase Studies: Apply your skills to real‑world problems in environment, agriculture, and urban planning.",
+    "text": "What you’ll find here\n\nGetting Started: Install R, RStudio, and essential spatial packages.\nVector Data Analysis: Work with points, lines, polygons, and perform spatial operations.\nRaster Data Analysis: Handle raster data, generate products from elevation data, and extract raster values.\nCartography - Map Making: Create static and interactive maps with ggplot2, tmap, and leaflet.\nRemote Sensing: Compute spectral indices, land cover classification, and change detection workflows.\nGoogle Earth Engine: Connect R to GEE with rgee for large‑scale cloud analysis.\nCase Studies: Apply your skills to real‑world problems.",
     "crumbs": [
       "Home",
       "Welcome",
@@ -251,7 +251,7 @@
     "href": "index.html#who-is-this-for",
     "title": "R for GIS and Remote Sensing Tutorials",
     "section": "Who is this for?",
-    "text": "Who is this for?\nThese tutorials are designed for:\n\nStudents learning GIS and remote sensing.\nResearchers analyzing spatial data in environmental science, agriculture, or urban studies.\nProfessionals who want to add R to their geospatial toolkit.\n\nNo prior GIS experience is required, but basic familiarity with R will help.",
+    "text": "Who is this for?\nThese tutorials are designed for:\n\nStudents learning GIS and remote sensing.\nResearchers analyzing spatial data to solve real-world problems.\nProfessionals who want to add R to their geospatial toolkit.\n\nBasic GIS and Remote Sensing knowledge is required, prior R or computer programming experience is not a requirement.If you are new to GIS go through this and Remote Sensing, start from here",
     "crumbs": [
       "Home",
       "Welcome",
@@ -264,6 +264,18 @@
     "title": "R for GIS and Remote Sensing Tutorials",
     "section": "How to use this site",
     "text": "How to use this site\n\nEach tutorial is self‑contained and includes code snippets, explanations, and screenshots.\nTutorials are grouped by category so you can jump directly to the topic you need.\nFollow along interactively in RStudio or VS Code for the best learning experience.",
+    "crumbs": [
+      "Home",
+      "Welcome",
+      "R for GIS and Remote Sensing Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#tutorials-data",
+    "href": "index.html#tutorials-data",
+    "title": "R for GIS and Remote Sensing Tutorials",
+    "section": "Tutorials data",
+    "text": "Tutorials data\nThe dataset used for these tutorials can be dowlnoalded from here",
     "crumbs": [
       "Home",
       "Welcome",
