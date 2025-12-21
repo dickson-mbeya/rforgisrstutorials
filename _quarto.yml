@@ -5,7 +5,7 @@ project:
 website:
   title: "R for GIS and Remote Sensing Tutorials"
   description: "Step-by-step tutorials for spatial data analysis, map making, and remote sensing in R."
-  site-url: https://dicksonmbeya.com/rforgisrstutorials
+  site-url: https://dickson-mbeya.github.io/rforgisrstutorials
   navbar:
     logo: assets/images/logo.png
     left:
