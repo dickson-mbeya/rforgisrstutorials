@@ -5,7 +5,7 @@ project:
 website:
   title: "R for GIS and Remote Sensing Tutorials"
   description: "Step-by-step tutorials for spatial data analysis, map making, and remote sensing in R."
-  #site-url: https://<your-user>.github.io/<your-repo>
+  site-url: https://dicksonmbeya.com/rforgisrstutorials
   navbar:
     logo: assets/images/logo.png
     left:
@@ -21,7 +21,7 @@ website:
         text: Author
     right:
       - icon: github
-        href: https://github.com/<your-user>/<your-repo>
+        href: https://github.com/dickson-mbeya/rforgisrstutorials
 
   sidebar:
     style: docked
