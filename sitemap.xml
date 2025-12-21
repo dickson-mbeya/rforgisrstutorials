@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/r-basics.html</loc>
-    <lastmod>2025-12-21T02:18:04.614Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/map-projections.html</loc>
-    <lastmod>2025-12-21T02:18:04.612Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/install-r.html</loc>
-    <lastmod>2025-12-21T02:18:04.611Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/index.html</loc>
-    <lastmod>2025-12-21T02:18:04.609Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/geometric-operations.html</loc>
-    <lastmod>2025-12-21T02:18:04.608Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dicksonmbeya.com/rforgisrstutorials/index.html</loc>
-    <lastmod>2025-12-21T02:18:04.607Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/about.html</loc>
-    <lastmod>2025-12-21T02:18:04.608Z</lastmod>
-  </url>
-  <url>
     <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/getting-started.html</loc>
-    <lastmod>2025-12-21T02:18:04.609Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/install-packages.html</loc>
-    <lastmod>2025-12-21T02:18:04.609Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/make-map.html</loc>
-    <lastmod>2025-12-21T02:18:04.612Z</lastmod>
+    <lastmod>2025-12-21T03:13:18.759Z</lastmod>
   </url>
   <url>
     <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/queries.html</loc>
-    <lastmod>2025-12-21T02:18:04.612Z</lastmod>
+    <lastmod>2025-12-21T03:13:18.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/map-projections.html</loc>
+    <lastmod>2025-12-21T03:13:18.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/index.html</loc>
+    <lastmod>2025-12-21T03:13:18.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/make-map.html</loc>
+    <lastmod>2025-12-21T03:13:18.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dicksonmbeya.com/rforgisrstutorials/index.html</loc>
+    <lastmod>2025-12-21T03:13:18.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/geometric-operations.html</loc>
+    <lastmod>2025-12-21T03:13:18.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/install-packages.html</loc>
+    <lastmod>2025-12-21T03:13:18.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/r-basics.html</loc>
+    <lastmod>2025-12-21T03:13:18.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/about.html</loc>
+    <lastmod>2025-12-21T03:13:18.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dicksonmbeya.com/rforgisrstutorials/tutorials/install-r.html</loc>
+    <lastmod>2025-12-21T03:13:18.759Z</lastmod>
   </url>
 </urlset>
