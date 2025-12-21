@@ -208,7 +208,7 @@
     "href": "tutorials/index.html",
     "title": "Tutorials",
     "section": "",
-    "text": "Browse all tutorials below.\n\n\n\n\n\n\n\n\n\n\n\nAttribute and spatial queries\n\n\n\n\n\n\n\n\n\n\n\n\n\nDickson Mbeya\n\n\n\n\n\n\n\n\n\n\n\n\n\nGeometric operations\n\n\n\n\n\n\n\n\n\n\n\n\n\nGetting Started\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall GIS and remote sensing R packages\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall R and RStudio\n\n\n\n\n\n\n\n\n\n\n\n\n\nMaking the first map in R\n\n\n\n\n\n\n\n\n\n\n\n\n\nR basics\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorking with map projections\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Browse all tutorials below.\n\n\n\n\n\n\n\n\n\n\n\nAttribute and spatial queries\n\n\n\n\n\n\n\n\n\n\n\n\n\nGeometric operations\n\n\n\n\n\n\n\n\n\n\n\n\n\nGetting Started\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall GIS and remote sensing R packages\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall R and RStudio\n\n\n\n\n\n\n\n\n\n\n\n\n\nMaking the first map in R\n\n\n\n\n\n\n\n\n\n\n\n\n\nR basics\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorking with map projections\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "tutorials/geometric-operations.html",
@@ -319,25 +319,39 @@
     ]
   },
   {
-    "objectID": "tutorials/about.html",
-    "href": "tutorials/about.html",
+    "objectID": "connect/about.html",
+    "href": "connect/about.html",
     "title": "Dickson Mbeya",
     "section": "",
     "text": "linkedin\n  \n  \n    \n     Github\n  \n\n      \nDickson Mbeya is the founder of the R for GIS and Remote Sensing Mentorship Program. He is an award-winning cartographer and an experienced geospatial professional with more than a decade of experience in utilizing geospatial technologies to derive information products.\nHe currently works as Cartography Technician with the Malawi University of Science and Technology. He has have 8 years experience teaching GIS and Remote Sensing in a higher learning institution. Dickson is an expert in utilizing industry standard commercial and open source GIS, mapping and satellite image processing software and programming languages.\n\n\nMalawi University of Science and Technology, Malawi | MSc in Biodiversity Informatics | 2024\nUniversity of Malawi | BSc in Earth Sciences | 2015\n\n\n\nMalawi University of Science and Teachnology | Project Manager and Spatial Assessment Lead | January 2023 - present\nMalawi University of Science and Technology | Cartography Technician | Sept 2017 - present"
   },
   {
-    "objectID": "tutorials/about.html#education",
-    "href": "tutorials/about.html#education",
+    "objectID": "connect/about.html#education",
+    "href": "connect/about.html#education",
     "title": "Dickson Mbeya",
     "section": "",
     "text": "Malawi University of Science and Technology, Malawi | MSc in Biodiversity Informatics | 2024\nUniversity of Malawi | BSc in Earth Sciences | 2015"
   },
   {
-    "objectID": "tutorials/about.html#experience",
-    "href": "tutorials/about.html#experience",
+    "objectID": "connect/about.html#experience",
+    "href": "connect/about.html#experience",
     "title": "Dickson Mbeya",
     "section": "",
     "text": "Malawi University of Science and Teachnology | Project Manager and Spatial Assessment Lead | January 2023 - present\nMalawi University of Science and Technology | Cartography Technician | Sept 2017 - present"
+  },
+  {
+    "objectID": "blog/blog1.html",
+    "href": "blog/blog1.html",
+    "title": "Blog Article 1",
+    "section": "",
+    "text": "Content coming soon!"
+  },
+  {
+    "objectID": "projects/my-work.html",
+    "href": "projects/my-work.html",
+    "title": "My projects",
+    "section": "",
+    "text": "Content coming soon!"
   },
   {
     "objectID": "tutorials/getting-started.html",
