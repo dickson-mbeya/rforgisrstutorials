@@ -148,7 +148,127 @@
     "href": "tutorials/map-projections.html",
     "title": "Working with map projections",
     "section": "",
-    "text": "Coming soon!",
+    "text": "Map projections are mathematical methods that let us represent the curved surface of the Earth on a flat medium, such as a screen or paper. If you’ve ever created a map, you’ve already used a projection.\nEvery map introduces some distortion because it’s impossible to flatten a spherical surface without stretching, compressing, or tearing it. Projections manage this distortion in a systematic way, allowing cartographers to decide where and how it occur",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#overview",
+    "href": "tutorials/map-projections.html#overview",
+    "title": "Working with map projections",
+    "section": "Overview",
+    "text": "Overview\nIn this tutorial, you’ll learn how to:\n\nCheck the current projection of spatial data.\nTransform data to a different projection.\nVisualize maps in different projections using tmap.\n\nWe’ll use the sf package for spatial operations and tmap for visualization.",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#install-and-load-packages",
+    "href": "tutorials/map-projections.html#install-and-load-packages",
+    "title": "Working with map projections",
+    "section": "Install and load packages",
+    "text": "Install and load packages\nIf you haven’t installed sf and tmap packages, remove the comment # to install the packages. Otherwise, continue to load the packages.\n\n# install.packages(c(\"sf\", \"tmap\") \n\n# Load libraries\nlibrary(sf)\nlibrary(tmap)",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#data",
+    "href": "tutorials/map-projections.html#data",
+    "title": "Working with map projections",
+    "section": "Data",
+    "text": "Data\nYou will use three datasets:\n\nWorld data that comes with the tmap package. The data shows the world’s continents\nCircles data. The circles used to visualize and measure distortion in map projection demonstrations are known as Tissot’s indicatrices.\n\nCheck the dataset that comes with tmap package\n\ndata(package = \"tmap\")\n\nLoad the data\n\nworld &lt;- World\ncircles &lt;- st_read(\"../assets/data/projections/circles.shp\")\n\nReading layer `circles' from data source \n  `C:\\Users\\devmbeya\\Documents\\rforgisrstutorials\\assets\\data\\projections\\circles.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 23 features and 1 field\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -170.0119 ymin: -89.9614 xmax: 170.0438 ymax: 89.99475\nGeodetic CRS:  WGS 84",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#check-current-projection",
+    "href": "tutorials/map-projections.html#check-current-projection",
+    "title": "Working with map projections",
+    "section": "Check current projection",
+    "text": "Check current projection\nUse st_crs() to inspect the Coordinate Reference System (CRS):\n\nst_crs(world)\n\nCoordinate Reference System:\n  User input: EPSG:4326 \n  wkt:\nGEOGCRS[\"WGS 84\",\n    ENSEMBLE[\"World Geodetic System 1984 ensemble\",\n        MEMBER[\"World Geodetic System 1984 (Transit)\"],\n        MEMBER[\"World Geodetic System 1984 (G730)\"],\n        MEMBER[\"World Geodetic System 1984 (G873)\"],\n        MEMBER[\"World Geodetic System 1984 (G1150)\"],\n        MEMBER[\"World Geodetic System 1984 (G1674)\"],\n        MEMBER[\"World Geodetic System 1984 (G1762)\"],\n        MEMBER[\"World Geodetic System 1984 (G2139)\"],\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]],\n        ENSEMBLEACCURACY[2.0]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"geodetic latitude (Lat)\",north,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"geodetic longitude (Lon)\",east,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    USAGE[\n        SCOPE[\"Horizontal component of 3D system.\"],\n        AREA[\"World.\"],\n        BBOX[-90,-180,90,180]],\n    ID[\"EPSG\",4326]]\n\nst_crs(circles)\n\nCoordinate Reference System:\n  User input: WGS 84 \n  wkt:\nGEOGCRS[\"WGS 84\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"longitude\",east,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    ID[\"EPSG\",4326]]\n\n\nYou will notice that this dataset’s Coordinate Reference System is EPSG:4326. This is the global standard geographic coordinate system (CRS) for latitude and longitude, based on the World Geodetic System 1984 (WGS84) datum, often used by GPS and for web maps like OpenStreetMap, representing Earth’s surface as degrees. It defines locations with (Latitude, Longitude) pairs, unlike other systems that use meters. This dataset is not projected.",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#visualise-unprojected-data",
+    "href": "tutorials/map-projections.html#visualise-unprojected-data",
+    "title": "Working with map projections",
+    "section": "Visualise unprojected data",
+    "text": "Visualise unprojected data\n\nunprojected_earth &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Visualise\nunprojected_earth\n\n\n\n\n\n\n\n\nThis coordinate reference system though heavily distorts shapes near the poles when flattened.",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#transform-projection",
+    "href": "tutorials/map-projections.html#transform-projection",
+    "title": "Working with map projections",
+    "section": "Transform Projection",
+    "text": "Transform Projection\nTo transform the dataset’s projection to another projection, use st_transform(). Map projections can be specified using their EPSG codes (https://epsg.io) or their PROJ strings (https://proj-tmp.readthedocs.io/en/6.2/usage/quickstart.html).\n\nWeb Mercator map projection\nFor example, convert to WGS84 (EPSG:4326) and Web Mercator (EPSG:3857):\n\nworld_wm &lt;- st_transform(world, 3857)\ncircles_wm &lt;- st_transform(circles, 3857)\n\nVisualise web mercator projection\n\nweb_mercator &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world_wm) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles_wm) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Plot the map\nweb_mercator\n\n\n\n\n\n\n\n\nThe Web Mercator / Pseudo Mercator projection is a cylindrical map projection. The projection extremely distorts shapes at higher latitudes; areas near the poles are vastly exaggerated. This is a standard projection for web maps such as Google maps and Bing maps.\nCompare the map with the one for the unprojected dataset. Compare the sizes of Greenland and Africa on both maps.\n\n\nRobinson map projection\nRobinson map projection (ESRI:53030) is a compromise projection. It doesn’t perfectly preserve area, shape, or distance but minimizes overall visual error.\n\nworld_rob &lt;- st_transform(world, \"ESRI:53030\")\ncircles_rob &lt;- st_transform(circles, \"ESRI:53030\")\n\nVisualise Robinson projection\n\nrobinson &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world_rob) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles_rob) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Plot the map\nrobinson\n\n\n\n\n\n\n\n\n\n\nBonne map projection\nThe Bonne projection (ESRI:54024) is a classic pseudoconical, equal-area map projection, known for its heart-shaped appearance and used for mapping continents like Asia or Europe, featuring true scale along its central meridian and standard parallel, but distorting shapes and distances away from them, making it ideal for single-hemisphere or T-shaped regions.\n\nworld_bon &lt;- st_transform(world, \"ESRI:54024\")\ncircles_bon &lt;- st_transform(circles, \"ESRI:54024\")\n\nVisualise Bonne projection\n\nbonne &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world_bon) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles_bon) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Visualise the map\nbonne\n\n\n\n\n\n\n\n\n\n\nEqual Area Cyrindricall projection\nCylindrical equal area is an equal-area (equivalent) projection. It presents the world as a rectangle while maintaining relative areas on a map.\n\ncea &lt;- \"+proj=cea\"\n\nworld_cea &lt;- st_transform(world, crs = cea)\ncircles_cea &lt;- st_transform(circles, crs = cea)\n\nVisualise Equal Area projection\n\nequal_area_cyrindrical &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_cea) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_cea) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame=FALSE)\n\n\n# Plot the map\nequal_area_cyrindrical\n\n\n\n\n\n\n\n\nThe scale is correct along the standard parallels. Shape, scale, direction, angle, and distance distortion increase with the distance from the standard parallels. Shapes are distorted north-south between the standard parallels (if the equator is not used as the standard parallel) and east-west above the standard parallels. The distortion values are severe near the poles and symmetric across the equator and the central meridian.\n\n\nGoode Homolisine\nThe Goode homolosine projection (or interrupted Goode homolosine projection) is a pseudocylindrical, equal-area, composite map projection used for world maps.\n\nworld_goode &lt;- st_transform(world, \"ESRI:54052\")\ncircles_goode &lt;- st_transform(circles, \"ESRI:54052\")\n\n\ngoode_projection &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_goode) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_goode) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame=FALSE)\n\n\n# Plot the map\ngoode_projection\n\n\n\n\n\n\n\n\n\n\nOrthographic projection\nThe orthographic projection(EPSG:9840) is a perspective azimuthal projection centered around a given latitude and longitude.\n\northo_crs &lt;- \"+proj=ortho\"\nworld_ortho &lt;- st_transform(world, crs=ortho_crs)\ncircles_ortho &lt;- st_transform(circles, ortho_crs)\n\n\northographic &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_ortho) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_ortho) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame.r = 0,\n            frame.lwd = 0,\n            frame.color =\"grey30\", \n            inner.margins = c(0.2, 0.2, 0.2, 0.2)) \n\n\n# Plot the map\northographic\n\n\n\n\n\n\n\n\nIn orthographic projection, shape and area are distorted, especially away from the center, with extreme distortion at the edge.\n\n\nAzimuthal Equidistance\nThe Azimuthal Equidistant projection is a map projection that represents the Earth on a flat surface, preserving accurate distances and directions from one central point.\n\naeqd &lt;- \"+proj=aeqd\"\nworld_aeqd &lt;- st_transform(world, aeqd)\ncircles_aeqd &lt;- st_transform(circles, aeqd)\n\n\nazimuthal_equidistant &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_aeqd) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_aeqd) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame.r = 0,\n            frame.lwd = 0,\n            frame.color =\"grey30\", \n            inner.margins = c(0.2, 0.3, 0.3, 0.2)) \n\n\n# Plot the map\nazimuthal_equidistant\n\n\n\n\n\n\n\n\n\n\nPolar Lambert Azimuthal Projection\nThe Polar Lambert Azimuthal Projection has a polar aspect equal-area projection. Polar Lambert Azimuthal equal-area projection for the north pole (EPSG:3575).\n\nworld_pla &lt;- st_transform(world, 3575 )\ncircles_pla&lt;- st_transform(circles, 3575)\n\n\npolar_lambert &lt;- tm_graticules(x = seq(-180, 180, 50),\n              y = seq(-90, 90, 50),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_pla) + \n  tm_borders(col = \"black\") + \ntm_shape(circles_pla) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame.r = 0,\n            frame.lwd = 0,\n            frame.color =\"grey30\", \n            inner.margins = c(0.2, 0.3, 0.3, 0.2)) \n\n\n# Plot the map\npolar_lambert",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#compare-projections",
+    "href": "tutorials/map-projections.html#compare-projections",
+    "title": "Working with map projections",
+    "section": "Compare projections",
+    "text": "Compare projections\n\ntmap_arrange(unprojected_earth, web_mercator, robinson, bonne, equal_area_cyrindrical, goode_projection, orthographic, azimuthal_equidistant, polar_lambert, ncol = 3)",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#assigning-map-projection",
+    "href": "tutorials/map-projections.html#assigning-map-projection",
+    "title": "Working with map projections",
+    "section": "Assigning Map projection",
+    "text": "Assigning Map projection\nWhen the data set is missing a projection, we can assign it using the st_set_crs() function.\n\n# dataset &lt;- st_set_crs(dataset, \"EPSG:32726\")",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#when-to-reproject",
+    "href": "tutorials/map-projections.html#when-to-reproject",
+    "title": "Working with map projections",
+    "section": "When to reproject?",
+    "text": "When to reproject?\n\nFor analysis: Use a projection suitable for distance/area calculations (e.g., UTM).\nFor visualization: Web Mercator (EPSG:3857) is common for web maps.",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#references",
+    "href": "tutorials/map-projections.html#references",
+    "title": "Working with map projections",
+    "section": "References",
+    "text": "References\n\nPROJ contributors (2019). PROJ coordinate transformation software library. Open Source Geospatial Foundation. URL https://proj.org/.\nMapTiler. https://epsg.io/",
     "crumbs": [
       "Home",
       "Vector Data Analysis",
