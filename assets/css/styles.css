@@ -1,0 +1,38 @@
+/* ================================
+   Quarto Docked Sidebar Custom Styles
+   ================================ */
+
+/* Sidebar container */
+.q-sidebar-panel {
+    background-color: #f5f6fa !important; /* background color */
+}
+
+/* Section titles */
+.q-sidebar-panel .q-sidebar-section-title {
+    color: #f18d3f !important; /* orange text for section headers */
+    font-weight: bold;
+}
+
+/* Sidebar links */
+.q-sidebar-panel .q-sidebar-item a {
+    color: #f18d3f !important; /* orange text for links */
+    text-decoration: none;
+}
+
+/* Sidebar links hover */
+.q-sidebar-panel .q-sidebar-item a:hover {
+    color: #d67a30 !important; /* darker orange on hover */
+    text-decoration: underline;
+}
+
+/* Active sidebar link */
+.q-sidebar-panel .q-sidebar-item.active > a {
+    color: #ffffff !important;
+    background-color: #f18d3f !important;
+    border-radius: 4px;
+}
+
+/* Optional: padding for items */
+.q-sidebar-panel .q-sidebar-item {
+    padding: 5px 10px;
+}
