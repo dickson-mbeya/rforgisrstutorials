@@ -1,5 +1,642 @@
 [
   {
+    "objectID": "tutorials/visualise_s2.html",
+    "href": "tutorials/visualise_s2.html",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "",
+    "text": "Sentinel-2 is a multispectral Earth observation mission that captures imagery in 13 spectral bands at 10 m, 20 m, and 60 m spatial resolutions. With a wide swath width of 290 km, the twin Sentinel-2 satellites provide frequent and consistent coverage of the Earth’s surface.\nEach spectral band records different information about the land surface, such as vegetation, water, soil, and built-up areas. By combining these bands in different ways, we can create true-color and false-color composites that highlight specific surface features and patterns.",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/visualise_s2.html#overview",
+    "href": "tutorials/visualise_s2.html#overview",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "Overview:",
+    "text": "Overview:\nIn this tutorial, you will learn how to:\n\nRead Sentinel-2 image bands\nVisualise image bands\nResample image bands\nCreate multiband images\nCreate colour composites\nPlot colour composites\nExport images to local directory",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/visualise_s2.html#required-packages",
+    "href": "tutorials/visualise_s2.html#required-packages",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "Required packages",
+    "text": "Required packages\nYou will use the following packages: sf, terra and tmap.",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/visualise_s2.html#load-packages",
+    "href": "tutorials/visualise_s2.html#load-packages",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "Load packages",
+    "text": "Load packages\n\nlibrary(sf)\nlibrary(terra)\nlibrary(tmap)",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/visualise_s2.html#definitions",
+    "href": "tutorials/visualise_s2.html#definitions",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "Definitions",
+    "text": "Definitions\n\nBand: A single layer of information that records how much energy is reflected from the Earth’s surface within a specific range of wavelengths. For Sentinel-2, each band corresponds to a different part of the electromagnetic spectrum and captures unique surface characteristics.\n\nOne band = one grayscale image\nEach pixel = reflectance measured at a specific wavelength\nMultiple bands together = a multispectral image\n\nSpatRaster: A raster data object used by the terra package in R to store and work with gridded spatial data. It represents data arranged in rows and columns of cells (pixels), where each cell has a value and a geographic location. A SpatRaster can contain one layer(single band) or multiple layers (multiple bands) in the same object.\n\nOne band = a single-layer SpatRaster\nSeveral stacked bands = a multi-layer SpatRaster",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/visualise_s2.html#sentinel-2-band-characteristics",
+    "href": "tutorials/visualise_s2.html#sentinel-2-band-characteristics",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "Sentinel-2 band characteristics",
+    "text": "Sentinel-2 band characteristics\nThe bands read above are Sentinel-2 Level-2A Surface Reflectance bands for Blantyre city, Malawi acquired on October 24, 2025. The Sentinel-2 Level-2A product provides atmospherically corrected surface reflectance (SR) images, derived from the corresponding Level-1C products. The atmospheric correction accounts for:\n\nRayleigh scattering by air molecules,\nAbsorption and scattering by atmospheric gases, including ozone, oxygen, and water vapor, and\nAbsorption and scattering caused by aerosol particles.\n\n\n\n\nBand\nName\nSpatial Resolution\nWavelength (nm)\n\n\n\n\nB01\nCoastal aerosol\n60 m\n443\n\n\nB02\nBlue\n10 m\n490\n\n\nB03\nGreen\n10 m\n560\n\n\nB04\nRed\n10 m\n665\n\n\nB05\nVegetation Red Edge 1\n20 m\n705\n\n\nB06\nVegetation Red Edge 2\n20 m\n740\n\n\nB07\nVegetation Red Edge 3\n20 m\n783\n\n\nB08\nNIR\n10 m\n842\n\n\nB8A\nVegetation Red Edge\n20 m\n865\n\n\nB09\nWater Vapour\n60 m\n945\n\n\nB11\nSWIR 1\n20 m\n1610\n\n\nB12\nSWIR 2\n20 m\n2190\n\n\n\nTable 1: Sentinel-2 Bands and their Characteristics",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/visualise_s2.html#explore-properties-of-the-bands",
+    "href": "tutorials/visualise_s2.html#explore-properties-of-the-bands",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "Explore properties of the bands",
+    "text": "Explore properties of the bands\n\nprint(b1) # print band properties\n\nclass       : SpatRaster \nsize        : 357, 293, 1  (nrow, ncol, nlyr)\nresolution  : 60, 60  (x, y)\nextent      : 710340, 727920, 8242080, 8263500  (xmin, xmax, ymin, ymax)\ncoord. ref. : WGS 84 / UTM zone 36S (EPSG:32736) \nsource      : s2_b01.tif \nname        : Grayscale \n\ncrs(b1) # check the coordinate reference system for the band\n\n[1] \"PROJCRS[\\\"WGS 84 / UTM zone 36S\\\",\\n    BASEGEOGCRS[\\\"WGS 84\\\",\\n        DATUM[\\\"World Geodetic System 1984\\\",\\n            ELLIPSOID[\\\"WGS 84\\\",6378137,298.257223563,\\n                LENGTHUNIT[\\\"metre\\\",1]]],\\n        PRIMEM[\\\"Greenwich\\\",0,\\n            ANGLEUNIT[\\\"degree\\\",0.0174532925199433]],\\n        ID[\\\"EPSG\\\",4326]],\\n    CONVERSION[\\\"UTM zone 36S\\\",\\n        METHOD[\\\"Transverse Mercator\\\",\\n            ID[\\\"EPSG\\\",9807]],\\n        PARAMETER[\\\"Latitude of natural origin\\\",0,\\n            ANGLEUNIT[\\\"degree\\\",0.0174532925199433],\\n            ID[\\\"EPSG\\\",8801]],\\n        PARAMETER[\\\"Longitude of natural origin\\\",33,\\n            ANGLEUNIT[\\\"degree\\\",0.0174532925199433],\\n            ID[\\\"EPSG\\\",8802]],\\n        PARAMETER[\\\"Scale factor at natural origin\\\",0.9996,\\n            SCALEUNIT[\\\"unity\\\",1],\\n            ID[\\\"EPSG\\\",8805]],\\n        PARAMETER[\\\"False easting\\\",500000,\\n            LENGTHUNIT[\\\"metre\\\",1],\\n            ID[\\\"EPSG\\\",8806]],\\n        PARAMETER[\\\"False northing\\\",10000000,\\n            LENGTHUNIT[\\\"metre\\\",1],\\n            ID[\\\"EPSG\\\",8807]]],\\n    CS[Cartesian,2],\\n        AXIS[\\\"(E)\\\",east,\\n            ORDER[1],\\n            LENGTHUNIT[\\\"metre\\\",1]],\\n        AXIS[\\\"(N)\\\",north,\\n            ORDER[2],\\n            LENGTHUNIT[\\\"metre\\\",1]],\\n    USAGE[\\n        SCOPE[\\\"Navigation and medium accuracy spatial referencing.\\\"],\\n        AREA[\\\"Between 30°E and 36°E, southern hemisphere between 80°S and equator, onshore and offshore. Burundi. Eswatini (Swaziland). Kenya. Malawi. Mozambique. Rwanda. South Africa. Tanzania. Uganda. Zambia. Zimbabwe.\\\"],\\n        BBOX[-80,30,0,36]],\\n    ID[\\\"EPSG\\\",32736]]\"\n\nncell(b1) # check number of cells\n\n[1] 104601\n\ndim(b1) # check number or rows\n\n[1] 357 293   1\n\nres(b1) # check spatial resolution of band 1\n\n[1] 60 60\n\nres(b2) # check spatial resolution of band 2\n\n[1] 10 10\n\nres(b3) # check spatial resolution of band 3\n\n[1] 10 10\n\nnlyr(b1) # number of layers / bands\n\n[1] 1\n\n# Do bands have same properties: resolution, extent, number of rows, columns\n# and projection?\n#compareGeom(b1, b2)\n\n#compareGeom(b3, b2)",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/visualise_s2.html#visualise-the-bands",
+    "href": "tutorials/visualise_s2.html#visualise-the-bands",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "Visualise the bands",
+    "text": "Visualise the bands\nUse basic plot() function\n\nplot(b1)\n\n\n\n\n\n\n\n\nScale visualisation values\n\nplot(b1, col = gray(0:100/100))\n\n\n\n\n\n\n\nplot(b2, col = gray(0:100/100))\n\n\n\n\n\n\n\nplot(b3, col = gray(0:100/100))\n\n\n\n\n\n\n\nplot(b4, col = gray(0:100/100))\n\n\n\n\n\n\n\n\nThe plot() function with scaled gray values above creates a smooth grayscale color ramp from black to white and uses it to render the raster.\nWhat you see on the map:\n\nDark pixels → low reflectance / low digital numbers\nBright pixels → high reflectance / high digital numbers\n\nWe can title the plots\n\nplot(b1, col = gray(0:100/100), main = \"Band 1 (Grayscale)\")\n\n\n\n\n\n\n\nplot(b2, col = gray(0:100/100), main = \"Band 2 (Grayscale)\")\n\n\n\n\n\n\n\nplot(b3, col = gray(0:100/100), main = \"Band 3 (Grayscale)\")\n\n\n\n\n\n\n\nplot(b4, col = gray(0:100/100), main = \"Band 4 (Grayscale)\")\n\n\n\n\n\n\n\n\nPlot the bands side by side for comparison.\n\npar(mfrow = c(2,2))\nplot(b2, main = \"Blue\", col = gray(0:100/100))\nplot(b3, main = \"Green\", col = gray(0:100/100))\nplot(b4, main = \"Red\", col = gray(0:100/100))\nplot(b8, main = \"NIR\", col = gray(0:100/100))",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/visualise_s2.html#color-composites",
+    "href": "tutorials/visualise_s2.html#color-composites",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "Color Composites",
+    "text": "Color Composites\n\nTrue Colour\nThe true colour composite displays a natural-looking image by assigning Sentinel-2 bands B04(red), B03(green), and B02(blue) to the red, green, and blue channels of the image, respectively.\n\ns2_rgb &lt;- c(b4, b3, b2)  #create an object to store RGB bands\nplotRGB(s2_rgb, stretch=\"lin\") \n\n\n\n\n\n\n\n\nplotRGB() function makes a Red-Green-Blue plot based on three layers/bands in a SpatRaster(spatial raster).\nstretch provides an option to stretch the values to increase contrast: “lin” (linear) or “hist” (histogram).\n\n\nFalse Colour: RGB(8,4,3)\nFalse colour images are created by combining the near-infrared, red, and green bands. This type of composite is often used to evaluate vegetation density and health, with areas covered by plants showing up as deep red. Regions with denser vegetation appear darker red, while urban areas and bare soil appear gray or tan, and water bodies are shown in shades of blue or black.\n\ns2_fcc &lt;- c(b8, b4, b3)\nplotRGB(s2_fcc, stretch=\"hist\") # applied histogram stretch.\n\n\n\n\n\n\n\n\n\n\nSWIR: RGB(12,8,4)\nThis false-color composite uses SWIR (B12) for red, vegetation (B8A) for green, and red (B4) for blue. It highlights water content, burned areas, and vegetation health, while bare soil and urban areas appear bluish, and dense vegetation appears green.\nResample band 4 (10m spatial resolution) to 20m resolution of bands 12 and 8A before stacking\n\nb4_20m &lt;- resample(b4, b12, method=\"bilinear\") # match b12 resolution\n\nStack the bands\n\ns2_swir &lt;- c(b12, b8a, b4_20m)\nplotRGB(s2_swir, stretch=\"hist\")\n\n\n\n\n\n\n\n\n\n\nAgriculture: RGB(11,8,2)\nKnown as the Agriculture RGB composite, this image combines SWIR-1 (B11), near-infrared (B8), and blue (B2) bands. It is primarily used to assess crop health, as the SWIR and NIR bands effectively highlight dense vegetation, which appears dark green.\nSince bands 2 and 8 have a 10m spatial resolution, different from that of band 11 (20m), you will resample b2 and b8 to 20m before creating a stack.\n\nb2_20m &lt;- resample(b2, b11, method=\"bilinear\")\nb8_20m &lt;- resample(b8, b11, method=\"bilinear\")\n\nCreate a layer stack and the colour composite:\n\ns2_agriculture &lt;- c(b11, b8_20m, b2_20m)\nplotRGB(s2_agriculture, stretch = \"hist\", smooth = TRUE, axes=TRUE)",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/visualise_s2.html#create-a-multiband-image-stack-bands",
+    "href": "tutorials/visualise_s2.html#create-a-multiband-image-stack-bands",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "Create a Multiband image (stack bands)",
+    "text": "Create a Multiband image (stack bands)\nA multiband image contains multiple spectral bands stored together in a single dataset. We have already created this before when we were looking at color composites. We created images with three bands.\nYou will create a SpatRaster with multiple layers\nRemember that the twelve bands come at different spatial resolution. It is important to resample to a common resolution before stacking them together. Since the goal is to visualise the images, we will resample everything to 10m resolution. However, you cannot create a new spatial detail by upscalling 20m or 60m bands to 10m.\n\n# Use one 10 m band as reference\nref &lt;- b4  \n\nb1  &lt;- resample(b1,  ref, method=\"bilinear\")\nb5  &lt;- resample(b5,  ref, method=\"bilinear\")\nb6  &lt;- resample(b6,  ref, method=\"bilinear\")\nb7  &lt;- resample(b7,  ref, method=\"bilinear\")\nb8a &lt;- resample(b8a, ref, method=\"bilinear\")\nb9  &lt;- resample(b9,  ref, method=\"bilinear\")\nb11 &lt;- resample(b11, ref, method=\"bilinear\")\nb12 &lt;- resample(b12, ref, method=\"bilinear\")\n\nProceed to create a multiband image.\n\ns2 &lt;- c(b1, b2, b3, b4, b5, b6, b7, b8, b8a, b9, b11, b12)\nnames(s2) &lt;- c('b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b8a', 'b9', 'b11', 'b12')\n\nThe code above stacks individual Sentinel-2 spectral bands into a single multiband raster and assigns meaningful names to each band.\nPlot RGB composite from the multiband image:\n\nplotRGB(s2, r='b4', g='b3', b='b2', stretch=\"hist\", axes=TRUE)",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/visualise_s2.html#making-plots-using-tmap-package",
+    "href": "tutorials/visualise_s2.html#making-plots-using-tmap-package",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "Making plots using tmap package",
+    "text": "Making plots using tmap package\nYou can also use the tmap package to plot the images.\n\nTrue colour with tmap\n\ntm_shape(s2) + \n  tm_rgb(col = tm_vars(c(\"b4\", \"b3\", \"b2\"), multivariate = TRUE))\n\n\n\n\n\n\n\n\nYou should have noticed that the images plot with a black rectangle around the study area. You will now remove this unwanted region from the plots.\nYou will use the SpatVector (shapefile) for the study area (Blantyre city) to crop the image to city boundary so as not to plot no data values(black portions)\nFirst make sure that the coordinate reference system for Blantyre city is similar to that of the image bands.\n\nst_crs(b1)\n\nCoordinate Reference System:\n  User input: WGS 84 / UTM zone 36S \n  wkt:\nPROJCRS[\"WGS 84 / UTM zone 36S\",\n    BASEGEOGCRS[\"WGS 84\",\n        DATUM[\"World Geodetic System 1984\",\n            ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4326]],\n    CONVERSION[\"UTM zone 36S\",\n        METHOD[\"Transverse Mercator\",\n            ID[\"EPSG\",9807]],\n        PARAMETER[\"Latitude of natural origin\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8801]],\n        PARAMETER[\"Longitude of natural origin\",33,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8802]],\n        PARAMETER[\"Scale factor at natural origin\",0.9996,\n            SCALEUNIT[\"unity\",1],\n            ID[\"EPSG\",8805]],\n        PARAMETER[\"False easting\",500000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8806]],\n        PARAMETER[\"False northing\",10000000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8807]]],\n    CS[Cartesian,2],\n        AXIS[\"(E)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"(N)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"Navigation and medium accuracy spatial referencing.\"],\n        AREA[\"Between 30°E and 36°E, southern hemisphere between 80°S and equator, onshore and offshore. Burundi. Eswatini (Swaziland). Kenya. Malawi. Mozambique. Rwanda. South Africa. Tanzania. Uganda. Zambia. Zimbabwe.\"],\n        BBOX[-80,30,0,36]],\n    ID[\"EPSG\",32736]]\n\nst_crs(bt)\n\nCoordinate Reference System:\n  User input: WGS 84 / UTM zone 36S \n  wkt:\nPROJCRS[\"WGS 84 / UTM zone 36S\",\n    BASEGEOGCRS[\"WGS 84\",\n        DATUM[\"World Geodetic System 1984\",\n            ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4326]],\n    CONVERSION[\"UTM zone 36S\",\n        METHOD[\"Transverse Mercator\",\n            ID[\"EPSG\",9807]],\n        PARAMETER[\"Latitude of natural origin\",0,\n            ANGLEUNIT[\"Degree\",0.0174532925199433],\n            ID[\"EPSG\",8801]],\n        PARAMETER[\"Longitude of natural origin\",33,\n            ANGLEUNIT[\"Degree\",0.0174532925199433],\n            ID[\"EPSG\",8802]],\n        PARAMETER[\"Scale factor at natural origin\",0.9996,\n            SCALEUNIT[\"unity\",1],\n            ID[\"EPSG\",8805]],\n        PARAMETER[\"False easting\",500000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8806]],\n        PARAMETER[\"False northing\",10000000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8807]]],\n    CS[Cartesian,2],\n        AXIS[\"(E)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"(N)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    ID[\"EPSG\",32736]]\n\n\nIf the shapefile had a different projection from that of the bands, you would run the following to transform its crs (remove the comment #):\n\n# bt &lt;st_transform(bt, st_crs(b1))\n\nCrop the multiband image to city boundary bounding box. This trims the raster size.\n\nbt_s2 &lt;- crop(s2, bt)\n\nPlot the cropped image:\n\nplotRGB(bt_s2, r='b4', g='b3', b='b2', stretch=\"lin\", axes=TRUE)\n\n\n\n\n\n\n\n\nNext you will mask unwanted areas in the image using Blantyre city boundary so as not to plot no data values(black portions).\nPlot True Colour\n\nbt_s2_mask &lt;- mask(bt_s2, bt)\nplotRGB(bt_s2_mask, r='b4', g='b3', b='b2', stretch=\"hist\")\n\n\n\n\n\n\n\n\nPlot False Colour:\n\nbt_s2_mask &lt;- mask(bt_s2, bt)\nplotRGB(bt_s2_mask, r='b8', g='b4', b='b3', stretch=\"hist\")\n\n\n\n\n\n\n\n\nYou can export the raster using the writeRaster() function.\n\n# writeRaster(bt_s2_mask, \"blantyreCityS2.TIF\", overwrite=TRUE)",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/visualise_s2.html#more-plots",
+    "href": "tutorials/visualise_s2.html#more-plots",
+    "title": "Visualising Sentinel-2 Multispectral Data in R",
+    "section": "More plots",
+    "text": "More plots\nIt is possible to create a professional map using tmap which can go into a report, presentation or publication.\n\ntm_shape(bt_s2_mask) + \n  tm_rgb(col = tm_vars(c(\"b4\", \"b3\", \"b2\"), multivariate = TRUE)\n    )+ \n  tm_title(\"Blantyre City Sentinel-2 RGB (24 October 2025)\", \n           color = \"black\"\n           )+\n  tm_credits(\"Data Source: Copernicus Browser\",\n             position = c(\"left\", \"bottom\"), \n             size = 0.5\n             )+ \n  tm_credits(\"Date: 05 February 2026\", \n             position = c(\"left\", \"bottom\"),\n             size = 0.5\n             ) + \n  tm_credits(\"Author: Dickson Mbeya\",\n             fontface = \"italic\",\n             position = c(\"left\", \"bottom\"),\n             size = 0.5\n             ) + \n  tm_grid(lines = FALSE\n          )+ \n  tm_graticules(lines=FALSE, \n                col=\"grey\", \n                labels.size = 0.7\n                )",
+    "crumbs": [
+      "Home",
+      "Remote Sensing in R",
+      "Visualising Sentinel-2 Multispectral Data in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/queries.html",
+    "href": "tutorials/queries.html",
+    "title": "Attribute and spatial queries",
+    "section": "",
+    "text": "In this tutorial, you will learn how to select geographic features based on their association with non-spatial and also based on their location.",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Attribute and spatial queries"
+    ]
+  },
+  {
+    "objectID": "tutorials/queries.html#overview",
+    "href": "tutorials/queries.html#overview",
+    "title": "Attribute and spatial queries",
+    "section": "",
+    "text": "In this tutorial, you will learn how to select geographic features based on their association with non-spatial and also based on their location.",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Attribute and spatial queries"
+    ]
+  },
+  {
+    "objectID": "tutorials/queries.html#data-exploration",
+    "href": "tutorials/queries.html#data-exploration",
+    "title": "Attribute and spatial queries",
+    "section": "Data Exploration",
+    "text": "Data Exploration\nSet working directory\n\nsetwd(\"C:/Users/devmbeya/Documents/giswithrtutorials\") \ngetwd() #check the file path of the current directory\n\n[1] \"C:/Users/devmbeya/Documents/giswithrtutorials\"\n\n\nLoad required packages\n\nlibrary(sf)\nlibrary(dplyr)\n\nRead data\n\nafrica &lt;- st_read(\"../assets/data/vector/africa.shp\")\n\nReading layer `africa' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\vector\\africa.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 55 features and 13 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -25.36042 ymin: -46.96575 xmax: 51.41704 ymax: 37.3452\nGeodetic CRS:  WGS 84\n\nafrica_project &lt;- st_read(\"../assets/data/vector/africa_project.shp\")\n\nReading layer `africa_project' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\vector\\africa_project.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 55 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -4296552 ymin: -3854841 xmax: 3987157 ymax: 4134822\nProjected CRS: Africa_Sinusoidal\n\nafrica_continent &lt;- st_read(\"../assets/data/vector/africa_continent.shp\")\n\nReading layer `africa_continent' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\vector\\africa_continent.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 1 feature and 6 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -25.36055 ymin: -34.822 xmax: 63.49576 ymax: 37.34041\nGeodetic CRS:  WGS 84\n\ncities &lt;- st_read(\"../assets/data/vector/africa_capital_cities.shp\")\n\nReading layer `africa_capital_cities' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\vector\\africa_capital_cities.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 51 features and 14 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -23.521 ymin: -29.308 xmax: 47.528 ymax: 36.819\nGeodetic CRS:  WGS 84\n\nroads &lt;- st_read(\"../assets/data/vector/africa_roads.shp\")\n\nReading layer `africa_roads' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\vector\\africa_roads.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 2581 features and 30 fields\nGeometry type: MULTILINESTRING\nDimension:     XY\nBounding box:  xmin: -17.45546 ymin: -34.2343 xmax: 49.41792 ymax: 37.10583\nGeodetic CRS:  WGS 84",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Attribute and spatial queries"
+    ]
+  },
+  {
+    "objectID": "tutorials/queries.html#attribute-queries",
+    "href": "tutorials/queries.html#attribute-queries",
+    "title": "Attribute and spatial queries",
+    "section": "Attribute queries",
+    "text": "Attribute queries\nGIS data comes in two forms: spatial and attribute data. Spatial data represents the aspects of geography inform of map layers. Attribute data in GIS describe the properties or characteristics of the spatial features. A school would have its spatial data represented as geographic coordinates(latitudes and longitudes) and its attribute data would include name of the school, student enrollment, number of teachers, name of district it is located in etc.\nAttribute queries select geographic features based on their association with attributes (non-spatial data). This is achieved by using conditions such as field names(e.g., ADIMN, NAME), operators (e.g., &lt;, &gt;, =, ==) and values (e.g., Malawi, TRUE, 20000).\n\nafrica #print Africa sf\n\nSimple feature collection with 55 features and 13 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -25.36042 ymin: -46.96575 xmax: 51.41704 ymax: 37.3452\nGeodetic CRS:  WGS 84\nFirst 10 features:\n                         ADMIN ADM0_A3   POP_EST POP_RANK POP_YEAR GDP_MD\n1                     Ethiopia     ETH 112078730       17     2019  95912\n2                  South Sudan     SDS  11062113       14     2019  11998\n3                      Somalia     SOM  10192317       14     2019   4719\n4                        Kenya     KEN  52573973       16     2019  95503\n5                       Malawi     MWI  18628747       14     2019   7666\n6  United Republic of Tanzania     TZA  58005463       16     2019  63177\n7                   Somaliland     SOL   5096159       13     2014  17836\n8                      Morocco     MAR  36471769       15     2019 119700\n9               Western Sahara     SAH    603253       11     2017    907\n10       Republic of the Congo     COG   5380508       13     2019  12267\n   GDP_YEAR                   ECONOMY             INCOME_GRP CONTINENT\n1      2019 7. Least developed region          5. Low income    Africa\n2      2015 7. Least developed region          5. Low income    Africa\n3      2016 7. Least developed region          5. Low income    Africa\n4      2019   5. Emerging region: G20          5. Low income    Africa\n5      2019 7. Least developed region          5. Low income    Africa\n6      2019 7. Least developed region          5. Low income    Africa\n7      2013      6. Developing region 4. Lower middle income    Africa\n8      2019      6. Developing region 4. Lower middle income    Africa\n9      2007 7. Least developed region          5. Low income    Africa\n10     2019      6. Developing region 4. Lower middle income    Africa\n         SUBREGION                  REGION_WB               NAME_EN\n1   Eastern Africa         Sub-Saharan Africa              Ethiopia\n2   Eastern Africa         Sub-Saharan Africa           South Sudan\n3   Eastern Africa         Sub-Saharan Africa               Somalia\n4   Eastern Africa         Sub-Saharan Africa                 Kenya\n5   Eastern Africa         Sub-Saharan Africa                Malawi\n6   Eastern Africa         Sub-Saharan Africa              Tanzania\n7   Eastern Africa         Sub-Saharan Africa            Somaliland\n8  Northern Africa Middle East & North Africa               Morocco\n9  Northern Africa Middle East & North Africa        Western Sahara\n10   Middle Africa         Sub-Saharan Africa Republic of the Congo\n                         geometry\n1  MULTIPOLYGON (((34.0707 9.4...\n2  MULTIPOLYGON (((35.92084 4....\n3  MULTIPOLYGON (((46.46696 6....\n4  MULTIPOLYGON (((35.70585 4....\n5  MULTIPOLYGON (((34.96461 -1...\n6  MULTIPOLYGON (((32.92086 -9...\n7  MULTIPOLYGON (((48.93911 11...\n8  MULTIPOLYGON (((-8.817035 2...\n9  MULTIPOLYGON (((-8.817035 2...\n10 MULTIPOLYGON (((18.62639 3....\n\n# Check column names, use the names() function\nnames(africa)\n\n [1] \"ADMIN\"      \"ADM0_A3\"    \"POP_EST\"    \"POP_RANK\"   \"POP_YEAR\"  \n [6] \"GDP_MD\"     \"GDP_YEAR\"   \"ECONOMY\"    \"INCOME_GRP\" \"CONTINENT\" \n[11] \"SUBREGION\"  \"REGION_WB\"  \"NAME_EN\"    \"geometry\"  \n\n# check coordinates of the polygons\nafrica$geom\n\nGeometry set for 55 features \nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -25.36042 ymin: -46.96575 xmax: 51.41704 ymax: 37.3452\nGeodetic CRS:  WGS 84\nFirst 5 geometries:\n\n# Check the ADMIN column values\nafrica$ADMIN\n\n [1] \"Ethiopia\"                         \"South Sudan\"                     \n [3] \"Somalia\"                          \"Kenya\"                           \n [5] \"Malawi\"                           \"United Republic of Tanzania\"     \n [7] \"Somaliland\"                       \"Morocco\"                         \n [9] \"Western Sahara\"                   \"Republic of the Congo\"           \n[11] \"Democratic Republic of the Congo\" \"Namibia\"                         \n[13] \"South Africa\"                     \"Libya\"                           \n[15] \"Tunisia\"                          \"Zambia\"                          \n[17] \"Sierra Leone\"                     \"Guinea\"                          \n[19] \"Liberia\"                          \"Central African Republic\"        \n[21] \"Sudan\"                            \"Djibouti\"                        \n[23] \"Eritrea\"                          \"Ivory Coast\"                     \n[25] \"Mali\"                             \"Senegal\"                         \n[27] \"Nigeria\"                          \"Benin\"                           \n[29] \"Angola\"                           \"Botswana\"                        \n[31] \"Zimbabwe\"                         \"Chad\"                            \n[33] \"Algeria\"                          \"Mozambique\"                      \n[35] \"eSwatini\"                         \"Burundi\"                         \n[37] \"Rwanda\"                           \"Uganda\"                          \n[39] \"Lesotho\"                          \"Cameroon\"                        \n[41] \"Gabon\"                            \"Niger\"                           \n[43] \"Burkina Faso\"                     \"Togo\"                            \n[45] \"Ghana\"                            \"Guinea-Bissau\"                   \n[47] \"Egypt\"                            \"Mauritania\"                      \n[49] \"Equatorial Guinea\"                \"Gambia\"                          \n[51] \"Bir Tawil\"                        \"Madagascar\"                      \n[53] \"Comoros\"                          \"São Tomé and Principe\"           \n[55] \"Cabo Verde\"                      \n\n\n\nSubsetting vector data\nIn R, you van use dplyr subsetting functions to select a subset of the data: rows or columns. You can use the filter() and slice functions to select rows and select() to subset columns.\nSelect countries with population greater than 80 million. Use the dplyr’s filter() function.\n\n# Once again explore the data\nhead(africa)\n\nSimple feature collection with 6 features and 13 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 24.12156 ymin: -17.13534 xmax: 51.41704 ymax: 14.87953\nGeodetic CRS:  WGS 84\n                        ADMIN ADM0_A3   POP_EST POP_RANK POP_YEAR GDP_MD\n1                    Ethiopia     ETH 112078730       17     2019  95912\n2                 South Sudan     SDS  11062113       14     2019  11998\n3                     Somalia     SOM  10192317       14     2019   4719\n4                       Kenya     KEN  52573973       16     2019  95503\n5                      Malawi     MWI  18628747       14     2019   7666\n6 United Republic of Tanzania     TZA  58005463       16     2019  63177\n  GDP_YEAR                   ECONOMY    INCOME_GRP CONTINENT      SUBREGION\n1     2019 7. Least developed region 5. Low income    Africa Eastern Africa\n2     2015 7. Least developed region 5. Low income    Africa Eastern Africa\n3     2016 7. Least developed region 5. Low income    Africa Eastern Africa\n4     2019   5. Emerging region: G20 5. Low income    Africa Eastern Africa\n5     2019 7. Least developed region 5. Low income    Africa Eastern Africa\n6     2019 7. Least developed region 5. Low income    Africa Eastern Africa\n           REGION_WB     NAME_EN                       geometry\n1 Sub-Saharan Africa    Ethiopia MULTIPOLYGON (((34.0707 9.4...\n2 Sub-Saharan Africa South Sudan MULTIPOLYGON (((35.92084 4....\n3 Sub-Saharan Africa     Somalia MULTIPOLYGON (((46.46696 6....\n4 Sub-Saharan Africa       Kenya MULTIPOLYGON (((35.70585 4....\n5 Sub-Saharan Africa      Malawi MULTIPOLYGON (((34.96461 -1...\n6 Sub-Saharan Africa    Tanzania MULTIPOLYGON (((32.92086 -9...\n\n# Select countries with population greater than 80 million\npop &lt;- filter(africa, POP_EST &gt; 80000000)\npop\n\nSimple feature collection with 4 features and 13 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2.671082 ymin: -13.45835 xmax: 47.97917 ymax: 31.65648\nGeodetic CRS:  WGS 84\n                             ADMIN ADM0_A3   POP_EST POP_RANK POP_YEAR GDP_MD\n1                         Ethiopia     ETH 112078730       17     2019  95912\n2 Democratic Republic of the Congo     COD  86790567       16     2019  50400\n3                          Nigeria     NGA 200963599       17     2019 448120\n4                            Egypt     EGY 100388073       17     2019 303092\n  GDP_YEAR                   ECONOMY             INCOME_GRP CONTINENT\n1     2019 7. Least developed region          5. Low income    Africa\n2     2019 7. Least developed region          5. Low income    Africa\n3     2019   5. Emerging region: G20 4. Lower middle income    Africa\n4     2019   5. Emerging region: G20 4. Lower middle income    Africa\n        SUBREGION                  REGION_WB                          NAME_EN\n1  Eastern Africa         Sub-Saharan Africa                         Ethiopia\n2   Middle Africa         Sub-Saharan Africa Democratic Republic of the Congo\n3  Western Africa         Sub-Saharan Africa                          Nigeria\n4 Northern Africa Middle East & North Africa                            Egypt\n                        geometry\n1 MULTIPOLYGON (((34.0707 9.4...\n2 MULTIPOLYGON (((18.62639 3....\n3 MULTIPOLYGON (((3.5964 11.6...\n4 MULTIPOLYGON (((34.24835 31...\n\n# Plot the selected polygons\nplot(pop$geometry)\n\n\n\n\n\n\n\n\nSelect South Africa and Malawi polygons\n\nsouth_africa &lt;- filter(africa, NAME_EN == 'South Africa' | NAME_EN==\"Malawi\")\n\nplot(south_africa$geometry)\n\n\n\n\n\n\n\n\nSelect Malawi’s neighbors\n\nmalawi_and_neighb &lt;- filter(africa, NAME_EN == 'Malawi' | NAME_EN==\"Zambia\" | NAME_EN == \"Mozambique\" | NAME_EN == \"Tanzania\")\n\nplot(malawi_and_neighb$geometry)",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Attribute and spatial queries"
+    ]
+  },
+  {
+    "objectID": "tutorials/queries.html#spatial-queries",
+    "href": "tutorials/queries.html#spatial-queries",
+    "title": "Attribute and spatial queries",
+    "section": "Spatial queries",
+    "text": "Spatial queries\nTo select features by their location, we can use topological relations between vector geometries.\nTo select features by their location, we can use topological relations between vector geometries in sf. Common functions include:\n\nst_intersects(x, y) – returns features in x that intersect features in y.\nst_touches(x, y) – returns features in x that touch features in y (share a boundary but do not overlap).\nst_overlaps(x, y) – returns features in x that overlap features in y partially.\nst_contains(x, y) – returns features in x that contain features in y.\nst_contains_properly(x, y) – stricter version of st_contains.\nst_covers(x, y) – returns features in x that cover features in y.\nst_within(x, y) – returns features in x that are within features in y.\nst_covered_by(x, y) – returns features in x that are covered by features in y.\nst_disjoint(x, y) – returns features in x that do not intersect features in y.\n\nSelect cities that are located within East African countries.\n\nplot(cities$geometry)\n\n\n\n\n\n\n\n# Select countries within Eastern Africa\neast_africa &lt;- filter(africa, SUBREGION == 'Eastern Africa')\n\n# Plot East African countries\nplot(east_africa$geometry)\n\n# Select and plot all eastern African cities\neast_cities &lt;- st_intersection(x = cities, y=east_africa)\n\nplot(east_cities$geometry, add=TRUE, col='blue', pch=16)\n\nplot(cities$geometry, add=TRUE)",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Attribute and spatial queries"
+    ]
+  },
+  {
+    "objectID": "tutorials/make-map.html",
+    "href": "tutorials/make-map.html",
+    "title": "Making the first map in R",
+    "section": "",
+    "text": "In this tutorial, you will create a map that shows the range of African Elephant. You will use R’s sf and tmap packages to complete the task.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Making the first map in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/make-map.html#overview",
+    "href": "tutorials/make-map.html#overview",
+    "title": "Making the first map in R",
+    "section": "",
+    "text": "In this tutorial, you will create a map that shows the range of African Elephant. You will use R’s sf and tmap packages to complete the task.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Making the first map in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/make-map.html#set-the-working-directory",
+    "href": "tutorials/make-map.html#set-the-working-directory",
+    "title": "Making the first map in R",
+    "section": "Set the working directory",
+    "text": "Set the working directory\nThe setwd() function is used to set a working directory The command below sets the rgis folder located in folder in Documents as a working directory.\n\n# setwd(\"C:\\\\Users\\\\devmbeya\\\\Downloads\\\\gis-remote-sensing-r\")  #set working directory\n\nTo check the working directory we use the `getwd() function. It will give you file path to the current directory.\n\n# getwd()",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Making the first map in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/make-map.html#load-packages",
+    "href": "tutorials/make-map.html#load-packages",
+    "title": "Making the first map in R",
+    "section": "Load packages",
+    "text": "Load packages\n\nlibrary(sf) # package for working with vector data\nlibrary(tmap) # thematic mapping package",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Making the first map in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/make-map.html#read-data",
+    "href": "tutorials/make-map.html#read-data",
+    "title": "Making the first map in R",
+    "section": "Read data",
+    "text": "Read data\nTo read vector data (shapefiles) use the st_read() functiom of the sf package.\n\nafrica &lt;- st_read(\"../assets/data/africa.shp\")\n\nReading layer `africa' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\africa.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 54 features and 10 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -2823124 ymin: -4139718 xmax: 7068315 ymax: 4486662\nProjected CRS: WGS 84 / Pseudo-Mercator\n\nrange &lt;- st_read(\"../assets/data/africa_elephant.shp\")\n\nReading layer `africa_elephant' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\africa_elephant.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 4 features and 8 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -14.89546 ymin: -34.08534 xmax: 44.19669 ymax: 16.63432\nGeodetic CRS:  WGS 84",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Making the first map in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/make-map.html#explore-data",
+    "href": "tutorials/make-map.html#explore-data",
+    "title": "Making the first map in R",
+    "section": "Explore data",
+    "text": "Explore data\n\n# head(africa)\n# head(range)",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Making the first map in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/make-map.html#create-the-map",
+    "href": "tutorials/make-map.html#create-the-map",
+    "title": "Making the first map in R",
+    "section": "Create the map",
+    "text": "Create the map\nWe will use the tmap map-making package to create maps. While it is possible to create maps using the plot() base R function, tmap provides advanced options. tmap’s tm_shape() function is the basic building block. tm_shape() defines input data: vector or raster. tm_shape() is followed by one or more layer elements such as tm_fill(), tm_borders(), tm_polygons(), tm_dots(). We loaded two data sets Africa which shows country boundaries and range which shows the range of African Elephant.\nWe will symbolise the country boundaries fill with #C3C5B9 color and the Elephant range layer with #F2D685.\nAdd fill layer to Africa shape\n\ntm_shape(africa) + \n  tm_fill() +\n  tm_borders(col = \"white\") + \ntm_shape(range) +\n  tm_fill(fill=\"#F2D685\") +\ntm_shape(africa) +\n  tm_borders(col = \"green\")\n\n\n\n\n\n\n\n\nTo create a professional map which we can save locally, we will create add more tmap functions. We will add more elements to the map:\n\ntm_title() adds a title\ntm_text() adds text\ntm_credits() adds map credit\ntm_logo() adds an image\ntm_layout controls the map layout.\n\nVisit tmap package website for more information.\n\nafrica_elephant_range &lt;- tm_shape(africa) + \n  tm_fill(fill =\"#C3C5B9\") +\n  tm_borders(col=\"white\") + \n  tm_shape(range) + \n  tm_fill(\"#F2D685\") + \n  tm_shape(africa) + \n  tm_borders(col = \"white\") + \n  tm_text(\"NAME\", size = 0.6, xmod = 1.4, ymod = 0.8,  alpha=0.5, col = \"black\") + \n  tm_title(\"Known and Possible\\nRange of African\\nElephant\", color = \"#000000\",\n           position =c(0.05, 0.4), fontface = \"bold\", size = 1) +\n  tm_title(\"Botswana has the\\nhighest African Eephant\\npopulation of 130,000\", position =c(0.2, 0.3), size = 0.7)+\n  tm_credits(\"Data Source: ArcGIS Hub and World Population Review\\nCartographer: Dickson Mbeya\\nDate: 21 December 2025\",\n             position = c(\"left\", \"bottom\"),\n             size = 0.6, color =\"#000000\") + \n  tm_credits(\"#R4GISRSTUTORIALS\",\n             fontface = \"italic\",\n             position = c(\"right\", \"bottom\"),\n             size = 0.6, color =\"#000000\") +\n  tm_logo(\"../assets/images/r.png\", position = c(\"right\", \"top\"),height=1) +\n  tm_logo(\"../assets/data/elephant.png\", position = c(\"left\", \"top\"),height=5) + \n  tm_layout(outer.margins = c(0,0,0,0), asp = 1)\n\nPlot the map\n\nafrica_elephant_range\n\n\n\n\n\n\n\n\nTo save a map using tmap, you use the tmap_save() function.\n\n# tmap_save(africa_elephant_range, \"African Elephant range.png\")",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Making the first map in R"
+    ]
+  },
+  {
+    "objectID": "tutorials/install-packages.html",
+    "href": "tutorials/install-packages.html",
+    "title": "Install GIS and remote sensing R packages",
+    "section": "",
+    "text": "To prepare for the tutorials you will install core packages used in these tutorials for GIS and Remote Sensing.\n\n# install.packages(\"sf\")       # vector data package\n# install.packages(\"terra\")    # raster data package\n# install.packages(\"dplyr\")    # tidyverse package for data frame manipulation/ working with attribute data\n# install.packages(\"tmap\")     # for making maps\n# install.packages(\"leaflet\")  # for interactive visualization of maps\n# install.packages(\"ggplot2\")  # tidyverse data visualization package\n\nAlternatively, you would install all the packages in a single line of code.\n\n# install.packages(c(\"sf\", \"terra\", \"stars\", \"ggplot2\"))\n\nConfirm that you have successfully installed the packages:\n\nlibrary(sf)\nlibrary(terra)\nlibrary(dplyr)\nlibrary(tmap)\nlibrary(leaflet)\nlibrary(ggplot2)\n\nYou can also check all the installed packages by running the code:\n\n# installed.packages()",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Install GIS and remote sensing R packages"
+    ]
+  },
+  {
+    "objectID": "tutorials/getting-started.html",
+    "href": "tutorials/getting-started.html",
+    "title": "Getting Started",
+    "section": "",
+    "text": "Getting Started\nContent coming soon…"
+  },
+  {
+    "objectID": "projects/my-work.html",
+    "href": "projects/my-work.html",
+    "title": "My projects",
+    "section": "",
+    "text": "Content coming soon!"
+  },
+  {
+    "objectID": "blog/blog1.html",
+    "href": "blog/blog1.html",
+    "title": "Blog Article 1",
+    "section": "",
+    "text": "Content coming soon!"
+  },
+  {
+    "objectID": "connect/about.html",
+    "href": "connect/about.html",
+    "title": "Dickson Mbeya",
+    "section": "",
+    "text": "linkedin\n  \n  \n    \n     Github\n  \n\n      \nDickson Mbeya is the founder of the R for GIS and Remote Sensing Mentorship Program. He is an award-winning cartographer and an experienced geospatial professional with more than a decade of experience in utilizing geospatial technologies to derive information products.\nHe currently works as Cartography Technician with the Malawi University of Science and Technology. He has have 8 years experience teaching GIS and Remote Sensing in a higher learning institution. Dickson is an expert in utilizing industry standard commercial and open source GIS, mapping and satellite image processing software and programming languages.\n\n\nMalawi University of Science and Technology, Malawi | MSc in Biodiversity Informatics | 2024\nUniversity of Malawi | BSc in Earth Sciences | 2015\n\n\n\nMalawi University of Science and Teachnology | Project Manager and Spatial Assessment Lead | January 2023 - present\nMalawi University of Science and Technology | Cartography Technician | Sept 2017 - present"
+  },
+  {
+    "objectID": "connect/about.html#education",
+    "href": "connect/about.html#education",
+    "title": "Dickson Mbeya",
+    "section": "",
+    "text": "Malawi University of Science and Technology, Malawi | MSc in Biodiversity Informatics | 2024\nUniversity of Malawi | BSc in Earth Sciences | 2015"
+  },
+  {
+    "objectID": "connect/about.html#experience",
+    "href": "connect/about.html#experience",
+    "title": "Dickson Mbeya",
+    "section": "",
+    "text": "Malawi University of Science and Teachnology | Project Manager and Spatial Assessment Lead | January 2023 - present\nMalawi University of Science and Technology | Cartography Technician | Sept 2017 - present"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "R for GIS and Remote Sensing Tutorials",
+    "section": "",
+    "text": "Welcome to GIS and Remote Sensing with R Tutorials — a collection of step‑by‑step guides for learning spatial data analysis, map making, and remote sensing using the R programming language.",
+    "crumbs": [
+      "Home",
+      "Welcome",
+      "R for GIS and Remote Sensing Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#what-youll-find-here",
+    "href": "index.html#what-youll-find-here",
+    "title": "R for GIS and Remote Sensing Tutorials",
+    "section": "What you’ll find here",
+    "text": "What you’ll find here\n\nGetting Started: Install R, RStudio, and essential spatial packages.\nVector Data Analysis: Work with points, lines, polygons, and perform spatial operations.\nRaster Data Analysis: Handle raster data, generate products from elevation data, and extract raster values.\nCartography - Map Making: Create static and interactive maps with ggplot2, tmap, and leaflet.\nRemote Sensing: Compute spectral indices, land cover classification, and change detection workflows.\nGoogle Earth Engine: Connect R to GEE with rgee for large‑scale cloud analysis.\nCase Studies: Apply your skills to real‑world problems.",
+    "crumbs": [
+      "Home",
+      "Welcome",
+      "R for GIS and Remote Sensing Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#who-is-this-for",
+    "href": "index.html#who-is-this-for",
+    "title": "R for GIS and Remote Sensing Tutorials",
+    "section": "Who is this for?",
+    "text": "Who is this for?\nThese tutorials are designed for:\n\nStudents learning GIS and remote sensing.\nResearchers analyzing spatial data to solve real-world problems.\nProfessionals who want to add R to their geospatial toolkit.\n\nBasic GIS and Remote Sensing knowledge is required, prior R or computer programming experience is not a requirement.If you are new to GIS go through this and Remote Sensing, start from here",
+    "crumbs": [
+      "Home",
+      "Welcome",
+      "R for GIS and Remote Sensing Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use-this-site",
+    "href": "index.html#how-to-use-this-site",
+    "title": "R for GIS and Remote Sensing Tutorials",
+    "section": "How to use this site",
+    "text": "How to use this site\n\nEach tutorial is self‑contained and includes code snippets, explanations, and screenshots.\nTutorials are grouped by category so you can jump directly to the topic you need.\nFollow along interactively in RStudio or VS Code for the best learning experience.",
+    "crumbs": [
+      "Home",
+      "Welcome",
+      "R for GIS and Remote Sensing Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#tutorials-data",
+    "href": "index.html#tutorials-data",
+    "title": "R for GIS and Remote Sensing Tutorials",
+    "section": "Tutorials data",
+    "text": "Tutorials data\nThe dataset used for these tutorials can be dowlnoalded from here",
+    "crumbs": [
+      "Home",
+      "Welcome",
+      "R for GIS and Remote Sensing Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#start-learning",
+    "href": "index.html#start-learning",
+    "title": "R for GIS and Remote Sensing Tutorials",
+    "section": "Start learning",
+    "text": "Start learning\n👉 Begin with the Introduction to understand the basics, or dive straight into the Getting started tutorials.",
+    "crumbs": [
+      "Home",
+      "Welcome",
+      "R for GIS and Remote Sensing Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#license",
+    "href": "index.html#license",
+    "title": "R for GIS and Remote Sensing Tutorials",
+    "section": "License",
+    "text": "License\nThis work is licensed under a Creative Commons Attribution 4.0 International License\nUnder this license, you are allowed to use, share or modify the document in any way you seem fit and even make commercial use of it. You only need to give appropriate credit to the author for the original work.",
+    "crumbs": [
+      "Home",
+      "Welcome",
+      "R for GIS and Remote Sensing Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#about-the-author",
+    "href": "index.html#about-the-author",
+    "title": "R for GIS and Remote Sensing Tutorials",
+    "section": "About the author",
+    "text": "About the author\nThese tutorials are written and maintained by Dickson Mbeya.\nCopyright © 2025 Dickson Mbeya",
+    "crumbs": [
+      "Home",
+      "Welcome",
+      "R for GIS and Remote Sensing Tutorials"
+    ]
+  },
+  {
+    "objectID": "tutorials/geometric-operations.html",
+    "href": "tutorials/geometric-operations.html",
+    "title": "Geometric operations",
+    "section": "",
+    "text": "Coming soon!",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Geometric operations"
+    ]
+  },
+  {
+    "objectID": "tutorials/index.html",
+    "href": "tutorials/index.html",
+    "title": "Tutorials",
+    "section": "",
+    "text": "Browse all tutorials below.\n\n\n\n\n\n\n\n\n\n\n\nAttribute and spatial queries\n\n\n\n\n\n\n\n\n\n\n\n\n\nGeometric operations\n\n\n\n\n\n\n\n\n\n\n\n\n\nGetting Started\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall GIS and remote sensing R packages\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall R and RStudio\n\n\n\n\n\n\n\n\n\n\n\n\n\nMaking the first map in R\n\n\n\n\n\n\n\n\n\n\n\n\n\nR basics\n\n\n\n\n\n\n\n\n\n\n\n\n\nVisualising Sentinel-2 Multispectral Data in R\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorking with map projections\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "tutorials/install-r.html",
+    "href": "tutorials/install-r.html",
+    "title": "Install R and RStudio",
+    "section": "",
+    "text": "In this tutorial, you will learn how to install R and RStudio, the two essential tools for working with GIS and Remote Sensing in R.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Install R and RStudio"
+    ]
+  },
+  {
+    "objectID": "tutorials/install-r.html#step-1-download-r",
+    "href": "tutorials/install-r.html#step-1-download-r",
+    "title": "Install R and RStudio",
+    "section": "Step 1: Download R",
+    "text": "Step 1: Download R\nR is the programming language we will use throughout these tutorials.\n\nGo to the official R website: https://cran.r-project.org.\nChoose your operating system:\n\nWindows: Click “Download R for Windows” → “base” → download the installer.\nmacOS: Click “Download R for macOS” → choose the latest .pkg file.\nLinux: Follow the instructions for your distribution (Ubuntu, Fedora, etc.).\n\nRun the installer and follow the default options.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Install R and RStudio"
+    ]
+  },
+  {
+    "objectID": "tutorials/install-r.html#step-2-download-rstudio",
+    "href": "tutorials/install-r.html#step-2-download-rstudio",
+    "title": "Install R and RStudio",
+    "section": "Step 2: Download RStudio",
+    "text": "Step 2: Download RStudio\nRStudio is an Integrated Development Environment (IDE) that makes working with R easier. To install RStudio:\n\nVisit https://posit.co/download/rstudio-desktop/.\nDownload the free RStudio Desktop version for your operating system.\nInstall RStudio using the default settings.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Install R and RStudio"
+    ]
+  },
+  {
+    "objectID": "tutorials/install-r.html#step-3-verify-installation",
+    "href": "tutorials/install-r.html#step-3-verify-installation",
+    "title": "Install R and RStudio",
+    "section": "Step 3: Verify Installation",
+    "text": "Step 3: Verify Installation\n\nOpen RStudio.\n\n\n\n\nRStudio GUI\n\n\n\nThe Source pane is where you can edit and save R or Python scripts or author computational documents like Quarto and R Markdown.\nThe Console pane is used to write short interactive R commands.\nThe Environment pane displays temporary R objects as created during that R session.\nThe Output pane displays the plots, tables, or HTML outputs of executed code along with files saved to disk.\n\n\nIn the console, type: ```r version This will display the installed R version.\n\nTry a simple command\n\n10 + 10\n\n[1] 20",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "Install R and RStudio"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html",
+    "href": "tutorials/map-projections.html",
+    "title": "Working with map projections",
+    "section": "",
+    "text": "Map projections are mathematical methods that let us represent the curved surface of the Earth on a flat medium, such as a screen or paper. If you’ve ever created a map, you’ve already used a projection.\nEvery map introduces some distortion because it’s impossible to flatten a spherical surface without stretching, compressing, or tearing it. Projections manage this distortion in a systematic way, allowing cartographers to decide where and how it occur",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#overview",
+    "href": "tutorials/map-projections.html#overview",
+    "title": "Working with map projections",
+    "section": "Overview",
+    "text": "Overview\nIn this tutorial, you’ll learn how to:\n\nCheck the current projection of spatial data.\nTransform data to a different projection.\nVisualize maps in different projections using tmap.\n\nWe’ll use the sf package for spatial operations and tmap for visualization.",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#install-and-load-packages",
+    "href": "tutorials/map-projections.html#install-and-load-packages",
+    "title": "Working with map projections",
+    "section": "Install and load packages",
+    "text": "Install and load packages\nIf you haven’t installed sf and tmap packages, remove the comment # to install the packages. Otherwise, continue to load the packages.\n\n# install.packages(c(\"sf\", \"tmap\") \n\n# Load libraries\nlibrary(sf)\nlibrary(tmap)",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#data",
+    "href": "tutorials/map-projections.html#data",
+    "title": "Working with map projections",
+    "section": "Data",
+    "text": "Data\nYou will use three datasets:\n\nWorld data that comes with the tmap package. The data shows the world’s continents\nCircles data. The circles used to visualize and measure distortion in map projection demonstrations are known as Tissot’s indicatrices.\n\nCheck the dataset that comes with tmap package\n\ndata(package = \"tmap\")\n\nLoad the data\n\nworld &lt;- World\ncircles &lt;- st_read(\"../assets/data/projections/circles.shp\")\n\nReading layer `circles' from data source \n  `C:\\Users\\devmbeya\\Documents\\rforgisrstutorials\\assets\\data\\projections\\circles.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 23 features and 1 field\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -170.0119 ymin: -89.9614 xmax: 170.0438 ymax: 89.99475\nGeodetic CRS:  WGS 84",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#check-current-projection",
+    "href": "tutorials/map-projections.html#check-current-projection",
+    "title": "Working with map projections",
+    "section": "Check current projection",
+    "text": "Check current projection\nUse st_crs() to inspect the Coordinate Reference System (CRS):\n\nst_crs(world)\n\nCoordinate Reference System:\n  User input: EPSG:4326 \n  wkt:\nGEOGCRS[\"WGS 84\",\n    ENSEMBLE[\"World Geodetic System 1984 ensemble\",\n        MEMBER[\"World Geodetic System 1984 (Transit)\"],\n        MEMBER[\"World Geodetic System 1984 (G730)\"],\n        MEMBER[\"World Geodetic System 1984 (G873)\"],\n        MEMBER[\"World Geodetic System 1984 (G1150)\"],\n        MEMBER[\"World Geodetic System 1984 (G1674)\"],\n        MEMBER[\"World Geodetic System 1984 (G1762)\"],\n        MEMBER[\"World Geodetic System 1984 (G2139)\"],\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]],\n        ENSEMBLEACCURACY[2.0]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"geodetic latitude (Lat)\",north,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"geodetic longitude (Lon)\",east,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    USAGE[\n        SCOPE[\"Horizontal component of 3D system.\"],\n        AREA[\"World.\"],\n        BBOX[-90,-180,90,180]],\n    ID[\"EPSG\",4326]]\n\nst_crs(circles)\n\nCoordinate Reference System:\n  User input: WGS 84 \n  wkt:\nGEOGCRS[\"WGS 84\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"longitude\",east,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    ID[\"EPSG\",4326]]\n\n\nYou will notice that this dataset’s Coordinate Reference System is EPSG:4326. This is the global standard geographic coordinate system (CRS) for latitude and longitude, based on the World Geodetic System 1984 (WGS84) datum, often used by GPS and for web maps like OpenStreetMap, representing Earth’s surface as degrees. It defines locations with (Latitude, Longitude) pairs, unlike other systems that use meters. This dataset is not projected.",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#visualise-unprojected-data",
+    "href": "tutorials/map-projections.html#visualise-unprojected-data",
+    "title": "Working with map projections",
+    "section": "Visualise unprojected data",
+    "text": "Visualise unprojected data\n\nunprojected_earth &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Visualise\nunprojected_earth\n\n\n\n\n\n\n\n\nThis coordinate reference system though heavily distorts shapes near the poles when flattened.",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#transform-projection",
+    "href": "tutorials/map-projections.html#transform-projection",
+    "title": "Working with map projections",
+    "section": "Transform Projection",
+    "text": "Transform Projection\nTo transform the dataset’s projection to another projection, use st_transform(). Map projections can be specified using their EPSG codes (https://epsg.io) or their PROJ strings (https://proj-tmp.readthedocs.io/en/6.2/usage/quickstart.html).\n\nWeb Mercator map projection\nFor example, convert to WGS84 (EPSG:4326) and Web Mercator (EPSG:3857):\n\nworld_wm &lt;- st_transform(world, 3857)\ncircles_wm &lt;- st_transform(circles, 3857)\n\nVisualise web mercator projection\n\nweb_mercator &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world_wm) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles_wm) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Plot the map\nweb_mercator\n\n\n\n\n\n\n\n\nThe Web Mercator / Pseudo Mercator projection is a cylindrical map projection. The projection extremely distorts shapes at higher latitudes; areas near the poles are vastly exaggerated. This is a standard projection for web maps such as Google maps and Bing maps.\nCompare the map with the one for the unprojected dataset. Compare the sizes of Greenland and Africa on both maps.\n\n\nRobinson map projection\nRobinson map projection (ESRI:53030) is a compromise projection. It doesn’t perfectly preserve area, shape, or distance but minimizes overall visual error.\n\nworld_rob &lt;- st_transform(world, \"ESRI:53030\")\ncircles_rob &lt;- st_transform(circles, \"ESRI:53030\")\n\nVisualise Robinson projection\n\nrobinson &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world_rob) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles_rob) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Plot the map\nrobinson\n\n\n\n\n\n\n\n\n\n\nBonne map projection\nThe Bonne projection (ESRI:54024) is a classic pseudoconical, equal-area map projection, known for its heart-shaped appearance and used for mapping continents like Asia or Europe, featuring true scale along its central meridian and standard parallel, but distorting shapes and distances away from them, making it ideal for single-hemisphere or T-shaped regions.\n\nworld_bon &lt;- st_transform(world, \"ESRI:54024\")\ncircles_bon &lt;- st_transform(circles, \"ESRI:54024\")\n\nVisualise Bonne projection\n\nbonne &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world_bon) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles_bon) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Visualise the map\nbonne\n\n\n\n\n\n\n\n\n\n\nEqual Area Cyrindricall projection\nCylindrical equal area is an equal-area (equivalent) projection. It presents the world as a rectangle while maintaining relative areas on a map.\n\ncea &lt;- \"+proj=cea\"\n\nworld_cea &lt;- st_transform(world, crs = cea)\ncircles_cea &lt;- st_transform(circles, crs = cea)\n\nVisualise Equal Area projection\n\nequal_area_cyrindrical &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_cea) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_cea) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame=FALSE)\n\n\n# Plot the map\nequal_area_cyrindrical\n\n\n\n\n\n\n\n\nThe scale is correct along the standard parallels. Shape, scale, direction, angle, and distance distortion increase with the distance from the standard parallels. Shapes are distorted north-south between the standard parallels (if the equator is not used as the standard parallel) and east-west above the standard parallels. The distortion values are severe near the poles and symmetric across the equator and the central meridian.\n\n\nGoode Homolisine\nThe Goode homolosine projection (or interrupted Goode homolosine projection) is a pseudocylindrical, equal-area, composite map projection used for world maps.\n\nworld_goode &lt;- st_transform(world, \"ESRI:54052\")\ncircles_goode &lt;- st_transform(circles, \"ESRI:54052\")\n\n\ngoode_projection &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_goode) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_goode) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame=FALSE)\n\n\n# Plot the map\ngoode_projection\n\n\n\n\n\n\n\n\n\n\nOrthographic projection\nThe orthographic projection(EPSG:9840) is a perspective azimuthal projection centered around a given latitude and longitude.\n\northo_crs &lt;- \"+proj=ortho\"\nworld_ortho &lt;- st_transform(world, crs=ortho_crs)\ncircles_ortho &lt;- st_transform(circles, ortho_crs)\n\n\northographic &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_ortho) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_ortho) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame.r = 0,\n            frame.lwd = 0,\n            frame.color =\"grey30\", \n            inner.margins = c(0.2, 0.2, 0.2, 0.2)) \n\n\n# Plot the map\northographic\n\n\n\n\n\n\n\n\nIn orthographic projection, shape and area are distorted, especially away from the center, with extreme distortion at the edge.\n\n\nAzimuthal Equidistance\nThe Azimuthal Equidistant projection is a map projection that represents the Earth on a flat surface, preserving accurate distances and directions from one central point.\n\naeqd &lt;- \"+proj=aeqd\"\nworld_aeqd &lt;- st_transform(world, aeqd)\ncircles_aeqd &lt;- st_transform(circles, aeqd)\n\n\nazimuthal_equidistant &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_aeqd) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_aeqd) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame.r = 0,\n            frame.lwd = 0,\n            frame.color =\"grey30\", \n            inner.margins = c(0.2, 0.3, 0.3, 0.2)) \n\n\n# Plot the map\nazimuthal_equidistant\n\n\n\n\n\n\n\n\n\n\nPolar Lambert Azimuthal Projection\nThe Polar Lambert Azimuthal Projection has a polar aspect equal-area projection. Polar Lambert Azimuthal equal-area projection for the north pole (EPSG:3575).\n\nworld_pla &lt;- st_transform(world, 3575 )\ncircles_pla&lt;- st_transform(circles, 3575)\n\n\npolar_lambert &lt;- tm_graticules(x = seq(-180, 180, 50),\n              y = seq(-90, 90, 50),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_pla) + \n  tm_borders(col = \"black\") + \ntm_shape(circles_pla) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame.r = 0,\n            frame.lwd = 0,\n            frame.color =\"grey30\", \n            inner.margins = c(0.2, 0.3, 0.3, 0.2)) \n\n\n# Plot the map\npolar_lambert",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#compare-projections",
+    "href": "tutorials/map-projections.html#compare-projections",
+    "title": "Working with map projections",
+    "section": "Compare projections",
+    "text": "Compare projections\n\ntmap_arrange(unprojected_earth, web_mercator, robinson, bonne, equal_area_cyrindrical, goode_projection, orthographic, azimuthal_equidistant, polar_lambert, ncol = 3)",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#assigning-map-projection",
+    "href": "tutorials/map-projections.html#assigning-map-projection",
+    "title": "Working with map projections",
+    "section": "Assigning Map projection",
+    "text": "Assigning Map projection\nWhen the data set is missing a projection, we can assign it using the st_set_crs() function.\n\n# dataset &lt;- st_set_crs(dataset, \"EPSG:32726\")",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#when-to-reproject",
+    "href": "tutorials/map-projections.html#when-to-reproject",
+    "title": "Working with map projections",
+    "section": "When to reproject?",
+    "text": "When to reproject?\n\nFor analysis: Use a projection suitable for distance/area calculations (e.g., UTM).\nFor visualization: Web Mercator (EPSG:3857) is common for web maps.",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
+    "objectID": "tutorials/map-projections.html#references",
+    "href": "tutorials/map-projections.html#references",
+    "title": "Working with map projections",
+    "section": "References",
+    "text": "References\n\nPROJ contributors (2019). PROJ coordinate transformation software library. Open Source Geospatial Foundation. URL https://proj.org/.\nMapTiler. https://epsg.io/",
+    "crumbs": [
+      "Home",
+      "Vector Data Analysis",
+      "Working with map projections"
+    ]
+  },
+  {
     "objectID": "tutorials/r-basics.html",
     "href": "tutorials/r-basics.html",
     "title": "R basics",
@@ -141,499 +778,6 @@
       "Home",
       "Getting Started",
       "R basics"
-    ]
-  },
-  {
-    "objectID": "tutorials/map-projections.html",
-    "href": "tutorials/map-projections.html",
-    "title": "Working with map projections",
-    "section": "",
-    "text": "Map projections are mathematical methods that let us represent the curved surface of the Earth on a flat medium, such as a screen or paper. If you’ve ever created a map, you’ve already used a projection.\nEvery map introduces some distortion because it’s impossible to flatten a spherical surface without stretching, compressing, or tearing it. Projections manage this distortion in a systematic way, allowing cartographers to decide where and how it occur",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Working with map projections"
-    ]
-  },
-  {
-    "objectID": "tutorials/map-projections.html#overview",
-    "href": "tutorials/map-projections.html#overview",
-    "title": "Working with map projections",
-    "section": "Overview",
-    "text": "Overview\nIn this tutorial, you’ll learn how to:\n\nCheck the current projection of spatial data.\nTransform data to a different projection.\nVisualize maps in different projections using tmap.\n\nWe’ll use the sf package for spatial operations and tmap for visualization.",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Working with map projections"
-    ]
-  },
-  {
-    "objectID": "tutorials/map-projections.html#install-and-load-packages",
-    "href": "tutorials/map-projections.html#install-and-load-packages",
-    "title": "Working with map projections",
-    "section": "Install and load packages",
-    "text": "Install and load packages\nIf you haven’t installed sf and tmap packages, remove the comment # to install the packages. Otherwise, continue to load the packages.\n\n# install.packages(c(\"sf\", \"tmap\") \n\n# Load libraries\nlibrary(sf)\nlibrary(tmap)",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Working with map projections"
-    ]
-  },
-  {
-    "objectID": "tutorials/map-projections.html#data",
-    "href": "tutorials/map-projections.html#data",
-    "title": "Working with map projections",
-    "section": "Data",
-    "text": "Data\nYou will use three datasets:\n\nWorld data that comes with the tmap package. The data shows the world’s continents\nCircles data. The circles used to visualize and measure distortion in map projection demonstrations are known as Tissot’s indicatrices.\n\nCheck the dataset that comes with tmap package\n\ndata(package = \"tmap\")\n\nLoad the data\n\nworld &lt;- World\ncircles &lt;- st_read(\"../assets/data/projections/circles.shp\")\n\nReading layer `circles' from data source \n  `C:\\Users\\devmbeya\\Documents\\rforgisrstutorials\\assets\\data\\projections\\circles.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 23 features and 1 field\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -170.0119 ymin: -89.9614 xmax: 170.0438 ymax: 89.99475\nGeodetic CRS:  WGS 84",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Working with map projections"
-    ]
-  },
-  {
-    "objectID": "tutorials/map-projections.html#check-current-projection",
-    "href": "tutorials/map-projections.html#check-current-projection",
-    "title": "Working with map projections",
-    "section": "Check current projection",
-    "text": "Check current projection\nUse st_crs() to inspect the Coordinate Reference System (CRS):\n\nst_crs(world)\n\nCoordinate Reference System:\n  User input: EPSG:4326 \n  wkt:\nGEOGCRS[\"WGS 84\",\n    ENSEMBLE[\"World Geodetic System 1984 ensemble\",\n        MEMBER[\"World Geodetic System 1984 (Transit)\"],\n        MEMBER[\"World Geodetic System 1984 (G730)\"],\n        MEMBER[\"World Geodetic System 1984 (G873)\"],\n        MEMBER[\"World Geodetic System 1984 (G1150)\"],\n        MEMBER[\"World Geodetic System 1984 (G1674)\"],\n        MEMBER[\"World Geodetic System 1984 (G1762)\"],\n        MEMBER[\"World Geodetic System 1984 (G2139)\"],\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]],\n        ENSEMBLEACCURACY[2.0]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"geodetic latitude (Lat)\",north,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"geodetic longitude (Lon)\",east,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    USAGE[\n        SCOPE[\"Horizontal component of 3D system.\"],\n        AREA[\"World.\"],\n        BBOX[-90,-180,90,180]],\n    ID[\"EPSG\",4326]]\n\nst_crs(circles)\n\nCoordinate Reference System:\n  User input: WGS 84 \n  wkt:\nGEOGCRS[\"WGS 84\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        AXIS[\"longitude\",east,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n    ID[\"EPSG\",4326]]\n\n\nYou will notice that this dataset’s Coordinate Reference System is EPSG:4326. This is the global standard geographic coordinate system (CRS) for latitude and longitude, based on the World Geodetic System 1984 (WGS84) datum, often used by GPS and for web maps like OpenStreetMap, representing Earth’s surface as degrees. It defines locations with (Latitude, Longitude) pairs, unlike other systems that use meters. This dataset is not projected.",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Working with map projections"
-    ]
-  },
-  {
-    "objectID": "tutorials/map-projections.html#visualise-unprojected-data",
-    "href": "tutorials/map-projections.html#visualise-unprojected-data",
-    "title": "Working with map projections",
-    "section": "Visualise unprojected data",
-    "text": "Visualise unprojected data\n\nunprojected_earth &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Visualise\nunprojected_earth\n\n\n\n\n\n\n\n\nThis coordinate reference system though heavily distorts shapes near the poles when flattened.",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Working with map projections"
-    ]
-  },
-  {
-    "objectID": "tutorials/map-projections.html#transform-projection",
-    "href": "tutorials/map-projections.html#transform-projection",
-    "title": "Working with map projections",
-    "section": "Transform Projection",
-    "text": "Transform Projection\nTo transform the dataset’s projection to another projection, use st_transform(). Map projections can be specified using their EPSG codes (https://epsg.io) or their PROJ strings (https://proj-tmp.readthedocs.io/en/6.2/usage/quickstart.html).\n\nWeb Mercator map projection\nFor example, convert to WGS84 (EPSG:4326) and Web Mercator (EPSG:3857):\n\nworld_wm &lt;- st_transform(world, 3857)\ncircles_wm &lt;- st_transform(circles, 3857)\n\nVisualise web mercator projection\n\nweb_mercator &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world_wm) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles_wm) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Plot the map\nweb_mercator\n\n\n\n\n\n\n\n\nThe Web Mercator / Pseudo Mercator projection is a cylindrical map projection. The projection extremely distorts shapes at higher latitudes; areas near the poles are vastly exaggerated. This is a standard projection for web maps such as Google maps and Bing maps.\nCompare the map with the one for the unprojected dataset. Compare the sizes of Greenland and Africa on both maps.\n\n\nRobinson map projection\nRobinson map projection (ESRI:53030) is a compromise projection. It doesn’t perfectly preserve area, shape, or distance but minimizes overall visual error.\n\nworld_rob &lt;- st_transform(world, \"ESRI:53030\")\ncircles_rob &lt;- st_transform(circles, \"ESRI:53030\")\n\nVisualise Robinson projection\n\nrobinson &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world_rob) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles_rob) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Plot the map\nrobinson\n\n\n\n\n\n\n\n\n\n\nBonne map projection\nThe Bonne projection (ESRI:54024) is a classic pseudoconical, equal-area map projection, known for its heart-shaped appearance and used for mapping continents like Asia or Europe, featuring true scale along its central meridian and standard parallel, but distorting shapes and distances away from them, making it ideal for single-hemisphere or T-shaped regions.\n\nworld_bon &lt;- st_transform(world, \"ESRI:54024\")\ncircles_bon &lt;- st_transform(circles, \"ESRI:54024\")\n\nVisualise Bonne projection\n\nbonne &lt;- tm_graticules(x = seq(-180, 180, 10),\n                              y = seq(-90, 90, 10),\n                              labels.show = FALSE,\n                              col = \"grey50\",\n                              lwd = 0.6) +\n  tm_shape(world_bon) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \n  tm_shape(circles_bon) + \n  tm_polygons(col = \"blue\") +\n  tm_layout(frame=FALSE,\n            inner.margins = c(0.14, 0.01, 0.1, 0.01)) \n\n\n# Visualise the map\nbonne\n\n\n\n\n\n\n\n\n\n\nEqual Area Cyrindricall projection\nCylindrical equal area is an equal-area (equivalent) projection. It presents the world as a rectangle while maintaining relative areas on a map.\n\ncea &lt;- \"+proj=cea\"\n\nworld_cea &lt;- st_transform(world, crs = cea)\ncircles_cea &lt;- st_transform(circles, crs = cea)\n\nVisualise Equal Area projection\n\nequal_area_cyrindrical &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_cea) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_cea) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame=FALSE)\n\n\n# Plot the map\nequal_area_cyrindrical\n\n\n\n\n\n\n\n\nThe scale is correct along the standard parallels. Shape, scale, direction, angle, and distance distortion increase with the distance from the standard parallels. Shapes are distorted north-south between the standard parallels (if the equator is not used as the standard parallel) and east-west above the standard parallels. The distortion values are severe near the poles and symmetric across the equator and the central meridian.\n\n\nGoode Homolisine\nThe Goode homolosine projection (or interrupted Goode homolosine projection) is a pseudocylindrical, equal-area, composite map projection used for world maps.\n\nworld_goode &lt;- st_transform(world, \"ESRI:54052\")\ncircles_goode &lt;- st_transform(circles, \"ESRI:54052\")\n\n\ngoode_projection &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_goode) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_goode) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame=FALSE)\n\n\n# Plot the map\ngoode_projection\n\n\n\n\n\n\n\n\n\n\nOrthographic projection\nThe orthographic projection(EPSG:9840) is a perspective azimuthal projection centered around a given latitude and longitude.\n\northo_crs &lt;- \"+proj=ortho\"\nworld_ortho &lt;- st_transform(world, crs=ortho_crs)\ncircles_ortho &lt;- st_transform(circles, ortho_crs)\n\n\northographic &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_ortho) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_ortho) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame.r = 0,\n            frame.lwd = 0,\n            frame.color =\"grey30\", \n            inner.margins = c(0.2, 0.2, 0.2, 0.2)) \n\n\n# Plot the map\northographic\n\n\n\n\n\n\n\n\nIn orthographic projection, shape and area are distorted, especially away from the center, with extreme distortion at the edge.\n\n\nAzimuthal Equidistance\nThe Azimuthal Equidistant projection is a map projection that represents the Earth on a flat surface, preserving accurate distances and directions from one central point.\n\naeqd &lt;- \"+proj=aeqd\"\nworld_aeqd &lt;- st_transform(world, aeqd)\ncircles_aeqd &lt;- st_transform(circles, aeqd)\n\n\nazimuthal_equidistant &lt;- tm_graticules(x = seq(-180, 180, 10),\n              y = seq(-90, 90, 10),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_aeqd) + \n  tm_polygons(col = \"white\", fill = \"orange\") + \ntm_shape(circles_aeqd) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame.r = 0,\n            frame.lwd = 0,\n            frame.color =\"grey30\", \n            inner.margins = c(0.2, 0.3, 0.3, 0.2)) \n\n\n# Plot the map\nazimuthal_equidistant\n\n\n\n\n\n\n\n\n\n\nPolar Lambert Azimuthal Projection\nThe Polar Lambert Azimuthal Projection has a polar aspect equal-area projection. Polar Lambert Azimuthal equal-area projection for the north pole (EPSG:3575).\n\nworld_pla &lt;- st_transform(world, 3575 )\ncircles_pla&lt;- st_transform(circles, 3575)\n\n\npolar_lambert &lt;- tm_graticules(x = seq(-180, 180, 50),\n              y = seq(-90, 90, 50),\n              labels.show = FALSE,\n              col = \"grey50\",\n              lwd = 0.6) +\ntm_shape(world_pla) + \n  tm_borders(col = \"black\") + \ntm_shape(circles_pla) + \n  tm_polygons(col = \"blue\") +\ntm_layout(frame.r = 0,\n            frame.lwd = 0,\n            frame.color =\"grey30\", \n            inner.margins = c(0.2, 0.3, 0.3, 0.2)) \n\n\n# Plot the map\npolar_lambert",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Working with map projections"
-    ]
-  },
-  {
-    "objectID": "tutorials/map-projections.html#compare-projections",
-    "href": "tutorials/map-projections.html#compare-projections",
-    "title": "Working with map projections",
-    "section": "Compare projections",
-    "text": "Compare projections\n\ntmap_arrange(unprojected_earth, web_mercator, robinson, bonne, equal_area_cyrindrical, goode_projection, orthographic, azimuthal_equidistant, polar_lambert, ncol = 3)",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Working with map projections"
-    ]
-  },
-  {
-    "objectID": "tutorials/map-projections.html#assigning-map-projection",
-    "href": "tutorials/map-projections.html#assigning-map-projection",
-    "title": "Working with map projections",
-    "section": "Assigning Map projection",
-    "text": "Assigning Map projection\nWhen the data set is missing a projection, we can assign it using the st_set_crs() function.\n\n# dataset &lt;- st_set_crs(dataset, \"EPSG:32726\")",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Working with map projections"
-    ]
-  },
-  {
-    "objectID": "tutorials/map-projections.html#when-to-reproject",
-    "href": "tutorials/map-projections.html#when-to-reproject",
-    "title": "Working with map projections",
-    "section": "When to reproject?",
-    "text": "When to reproject?\n\nFor analysis: Use a projection suitable for distance/area calculations (e.g., UTM).\nFor visualization: Web Mercator (EPSG:3857) is common for web maps.",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Working with map projections"
-    ]
-  },
-  {
-    "objectID": "tutorials/map-projections.html#references",
-    "href": "tutorials/map-projections.html#references",
-    "title": "Working with map projections",
-    "section": "References",
-    "text": "References\n\nPROJ contributors (2019). PROJ coordinate transformation software library. Open Source Geospatial Foundation. URL https://proj.org/.\nMapTiler. https://epsg.io/",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Working with map projections"
-    ]
-  },
-  {
-    "objectID": "tutorials/install-r.html",
-    "href": "tutorials/install-r.html",
-    "title": "Install R and RStudio",
-    "section": "",
-    "text": "In this tutorial, you will learn how to install R and RStudio, the two essential tools for working with GIS and Remote Sensing in R.",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Install R and RStudio"
-    ]
-  },
-  {
-    "objectID": "tutorials/install-r.html#step-1-download-r",
-    "href": "tutorials/install-r.html#step-1-download-r",
-    "title": "Install R and RStudio",
-    "section": "Step 1: Download R",
-    "text": "Step 1: Download R\nR is the programming language we will use throughout these tutorials.\n\nGo to the official R website: https://cran.r-project.org.\nChoose your operating system:\n\nWindows: Click “Download R for Windows” → “base” → download the installer.\nmacOS: Click “Download R for macOS” → choose the latest .pkg file.\nLinux: Follow the instructions for your distribution (Ubuntu, Fedora, etc.).\n\nRun the installer and follow the default options.",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Install R and RStudio"
-    ]
-  },
-  {
-    "objectID": "tutorials/install-r.html#step-2-download-rstudio",
-    "href": "tutorials/install-r.html#step-2-download-rstudio",
-    "title": "Install R and RStudio",
-    "section": "Step 2: Download RStudio",
-    "text": "Step 2: Download RStudio\nRStudio is an Integrated Development Environment (IDE) that makes working with R easier.\n\nVisit https://posit.co/download/rstudio-desktop/.\nDownload the free RStudio Desktop version for your operating system.\nInstall RStudio using the default settings.",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Install R and RStudio"
-    ]
-  },
-  {
-    "objectID": "tutorials/install-r.html#step-3-verify-installation",
-    "href": "tutorials/install-r.html#step-3-verify-installation",
-    "title": "Install R and RStudio",
-    "section": "Step 3: Verify Installation",
-    "text": "Step 3: Verify Installation\n\nOpen RStudio.\n\n\n\n\nRStudio GUI\n\n\n\nThe Source pane is where you can edit and save R or Python scripts or author computational documents like Quarto and R Markdown.\nThe Console pane is used to write short interactive R commands.\nThe Environment pane displays temporary R objects as created during that R session.\nThe Output pane displays the plots, tables, or HTML outputs of executed code along with files saved to disk.\n\n\nIn the console, type: ```r version This will display the installed R version.\n\nTry a simple command\n\n10 + 10\n\n[1] 20",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Install R and RStudio"
-    ]
-  },
-  {
-    "objectID": "tutorials/index.html",
-    "href": "tutorials/index.html",
-    "title": "Tutorials",
-    "section": "",
-    "text": "Browse all tutorials below.\n\n\n\n\n\n\n\n\n\n\n\nAttribute and spatial queries\n\n\n\n\n\n\n\n\n\n\n\n\n\nGeometric operations\n\n\n\n\n\n\n\n\n\n\n\n\n\nGetting Started\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall GIS and remote sensing R packages\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall R and RStudio\n\n\n\n\n\n\n\n\n\n\n\n\n\nMaking the first map in R\n\n\n\n\n\n\n\n\n\n\n\n\n\nR basics\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorking with map projections\n\n\n\n\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "tutorials/geometric-operations.html",
-    "href": "tutorials/geometric-operations.html",
-    "title": "Geometric operations",
-    "section": "",
-    "text": "Coming soon!",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Geometric operations"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "R for GIS and Remote Sensing Tutorials",
-    "section": "",
-    "text": "Welcome to GIS and Remote Sensing with R Tutorials — a collection of step‑by‑step guides for learning spatial data analysis, map making, and remote sensing using the R programming language.",
-    "crumbs": [
-      "Home",
-      "Welcome",
-      "R for GIS and Remote Sensing Tutorials"
-    ]
-  },
-  {
-    "objectID": "index.html#what-youll-find-here",
-    "href": "index.html#what-youll-find-here",
-    "title": "R for GIS and Remote Sensing Tutorials",
-    "section": "What you’ll find here",
-    "text": "What you’ll find here\n\nGetting Started: Install R, RStudio, and essential spatial packages.\nVector Data Analysis: Work with points, lines, polygons, and perform spatial operations.\nRaster Data Analysis: Handle raster data, generate products from elevation data, and extract raster values.\nCartography - Map Making: Create static and interactive maps with ggplot2, tmap, and leaflet.\nRemote Sensing: Compute spectral indices, land cover classification, and change detection workflows.\nGoogle Earth Engine: Connect R to GEE with rgee for large‑scale cloud analysis.\nCase Studies: Apply your skills to real‑world problems.",
-    "crumbs": [
-      "Home",
-      "Welcome",
-      "R for GIS and Remote Sensing Tutorials"
-    ]
-  },
-  {
-    "objectID": "index.html#who-is-this-for",
-    "href": "index.html#who-is-this-for",
-    "title": "R for GIS and Remote Sensing Tutorials",
-    "section": "Who is this for?",
-    "text": "Who is this for?\nThese tutorials are designed for:\n\nStudents learning GIS and remote sensing.\nResearchers analyzing spatial data to solve real-world problems.\nProfessionals who want to add R to their geospatial toolkit.\n\nBasic GIS and Remote Sensing knowledge is required, prior R or computer programming experience is not a requirement.If you are new to GIS go through this and Remote Sensing, start from here",
-    "crumbs": [
-      "Home",
-      "Welcome",
-      "R for GIS and Remote Sensing Tutorials"
-    ]
-  },
-  {
-    "objectID": "index.html#how-to-use-this-site",
-    "href": "index.html#how-to-use-this-site",
-    "title": "R for GIS and Remote Sensing Tutorials",
-    "section": "How to use this site",
-    "text": "How to use this site\n\nEach tutorial is self‑contained and includes code snippets, explanations, and screenshots.\nTutorials are grouped by category so you can jump directly to the topic you need.\nFollow along interactively in RStudio or VS Code for the best learning experience.",
-    "crumbs": [
-      "Home",
-      "Welcome",
-      "R for GIS and Remote Sensing Tutorials"
-    ]
-  },
-  {
-    "objectID": "index.html#tutorials-data",
-    "href": "index.html#tutorials-data",
-    "title": "R for GIS and Remote Sensing Tutorials",
-    "section": "Tutorials data",
-    "text": "Tutorials data\nThe dataset used for these tutorials can be dowlnoalded from here",
-    "crumbs": [
-      "Home",
-      "Welcome",
-      "R for GIS and Remote Sensing Tutorials"
-    ]
-  },
-  {
-    "objectID": "index.html#start-learning",
-    "href": "index.html#start-learning",
-    "title": "R for GIS and Remote Sensing Tutorials",
-    "section": "Start learning",
-    "text": "Start learning\n👉 Begin with the Introduction to understand the basics, or dive straight into the Getting started tutorials.",
-    "crumbs": [
-      "Home",
-      "Welcome",
-      "R for GIS and Remote Sensing Tutorials"
-    ]
-  },
-  {
-    "objectID": "index.html#license",
-    "href": "index.html#license",
-    "title": "R for GIS and Remote Sensing Tutorials",
-    "section": "License",
-    "text": "License\nThis work is licensed under a Creative Commons Attribution 4.0 International License\nUnder this license, you are allowed to use, share or modify the document in any way you seem fit and even make commercial use of it. You only need to give appropriate credit to the author for the original work.",
-    "crumbs": [
-      "Home",
-      "Welcome",
-      "R for GIS and Remote Sensing Tutorials"
-    ]
-  },
-  {
-    "objectID": "index.html#about-the-author",
-    "href": "index.html#about-the-author",
-    "title": "R for GIS and Remote Sensing Tutorials",
-    "section": "About the author",
-    "text": "About the author\nThese tutorials are written and maintained by Dickson Mbeya.\nCopyright © 2025 Dickson Mbeya",
-    "crumbs": [
-      "Home",
-      "Welcome",
-      "R for GIS and Remote Sensing Tutorials"
-    ]
-  },
-  {
-    "objectID": "connect/about.html",
-    "href": "connect/about.html",
-    "title": "Dickson Mbeya",
-    "section": "",
-    "text": "linkedin\n  \n  \n    \n     Github\n  \n\n      \nDickson Mbeya is the founder of the R for GIS and Remote Sensing Mentorship Program. He is an award-winning cartographer and an experienced geospatial professional with more than a decade of experience in utilizing geospatial technologies to derive information products.\nHe currently works as Cartography Technician with the Malawi University of Science and Technology. He has have 8 years experience teaching GIS and Remote Sensing in a higher learning institution. Dickson is an expert in utilizing industry standard commercial and open source GIS, mapping and satellite image processing software and programming languages.\n\n\nMalawi University of Science and Technology, Malawi | MSc in Biodiversity Informatics | 2024\nUniversity of Malawi | BSc in Earth Sciences | 2015\n\n\n\nMalawi University of Science and Teachnology | Project Manager and Spatial Assessment Lead | January 2023 - present\nMalawi University of Science and Technology | Cartography Technician | Sept 2017 - present"
-  },
-  {
-    "objectID": "connect/about.html#education",
-    "href": "connect/about.html#education",
-    "title": "Dickson Mbeya",
-    "section": "",
-    "text": "Malawi University of Science and Technology, Malawi | MSc in Biodiversity Informatics | 2024\nUniversity of Malawi | BSc in Earth Sciences | 2015"
-  },
-  {
-    "objectID": "connect/about.html#experience",
-    "href": "connect/about.html#experience",
-    "title": "Dickson Mbeya",
-    "section": "",
-    "text": "Malawi University of Science and Teachnology | Project Manager and Spatial Assessment Lead | January 2023 - present\nMalawi University of Science and Technology | Cartography Technician | Sept 2017 - present"
-  },
-  {
-    "objectID": "blog/blog1.html",
-    "href": "blog/blog1.html",
-    "title": "Blog Article 1",
-    "section": "",
-    "text": "Content coming soon!"
-  },
-  {
-    "objectID": "projects/my-work.html",
-    "href": "projects/my-work.html",
-    "title": "My projects",
-    "section": "",
-    "text": "Content coming soon!"
-  },
-  {
-    "objectID": "tutorials/getting-started.html",
-    "href": "tutorials/getting-started.html",
-    "title": "Getting Started",
-    "section": "",
-    "text": "Getting Started\nContent coming soon…"
-  },
-  {
-    "objectID": "tutorials/install-packages.html",
-    "href": "tutorials/install-packages.html",
-    "title": "Install GIS and remote sensing R packages",
-    "section": "",
-    "text": "To prepare for the tutorials you will install core packages used in these tutorials for GIS and Remote Sensing.\n\n# install.packages(\"sf\")       # vector data package\n# install.packages(\"terra\")    # raster data package\n# install.packages(\"dplyr\")    # tidyverse package for data frame manipulation/ working with attribute data\n# install.packages(\"tmap\")     # for making maps\n# install.packages(\"leaflet\")  # for interactive visualization of maps\n# install.packages(\"ggplot2\")  # tidyverse data visualization package\n\nAlternatively, you would install all the packages in a single line of code.\n\n# install.packages(c(\"sf\", \"terra\", \"stars\", \"ggplot2\"))\n\nConfirm that you have successfully installed the packages:\n\nlibrary(sf)\nlibrary(terra)\nlibrary(dplyr)\nlibrary(tmap)\nlibrary(leaflet)\nlibrary(ggplot2)\n\nYou can also check all the installed packages by running the code:\n\n# installed.packages()",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Install GIS and remote sensing R packages"
-    ]
-  },
-  {
-    "objectID": "tutorials/make-map.html",
-    "href": "tutorials/make-map.html",
-    "title": "Making the first map in R",
-    "section": "",
-    "text": "In this tutorial, you will create a map that shows the range of African Elephant. You will use R’s sf and tmap packages to complete the task.",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Making the first map in R"
-    ]
-  },
-  {
-    "objectID": "tutorials/make-map.html#overview",
-    "href": "tutorials/make-map.html#overview",
-    "title": "Making the first map in R",
-    "section": "",
-    "text": "In this tutorial, you will create a map that shows the range of African Elephant. You will use R’s sf and tmap packages to complete the task.",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Making the first map in R"
-    ]
-  },
-  {
-    "objectID": "tutorials/make-map.html#set-the-working-directory",
-    "href": "tutorials/make-map.html#set-the-working-directory",
-    "title": "Making the first map in R",
-    "section": "Set the working directory",
-    "text": "Set the working directory\nThe setwd() function is used to set a working directory The command below sets the rgis folder located in folder in Documents as a working directory.\n\n# setwd(\"C:\\\\Users\\\\devmbeya\\\\Downloads\\\\gis-remote-sensing-r\")  #set working directory\n\nTo check the working directory we use the `getwd() function. It will give you file path to the current directory.\n\n# getwd()",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Making the first map in R"
-    ]
-  },
-  {
-    "objectID": "tutorials/make-map.html#load-packages",
-    "href": "tutorials/make-map.html#load-packages",
-    "title": "Making the first map in R",
-    "section": "Load packages",
-    "text": "Load packages\n\nlibrary(sf) # package for working with vector data\nlibrary(tmap) # thematic mapping package",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Making the first map in R"
-    ]
-  },
-  {
-    "objectID": "tutorials/make-map.html#read-data",
-    "href": "tutorials/make-map.html#read-data",
-    "title": "Making the first map in R",
-    "section": "Read data",
-    "text": "Read data\nTo read vector data (shapefiles) use the st_read() functiom of the sf package.\n\nafrica &lt;- st_read(\"../assets/data/africa.shp\")\n\nReading layer `africa' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\africa.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 54 features and 10 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -2823124 ymin: -4139718 xmax: 7068315 ymax: 4486662\nProjected CRS: WGS 84 / Pseudo-Mercator\n\nrange &lt;- st_read(\"../assets/data/africa_elephant.shp\")\n\nReading layer `africa_elephant' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\africa_elephant.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 4 features and 8 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -14.89546 ymin: -34.08534 xmax: 44.19669 ymax: 16.63432\nGeodetic CRS:  WGS 84",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Making the first map in R"
-    ]
-  },
-  {
-    "objectID": "tutorials/make-map.html#explore-data",
-    "href": "tutorials/make-map.html#explore-data",
-    "title": "Making the first map in R",
-    "section": "Explore data",
-    "text": "Explore data\n\n# head(africa)\n# head(range)",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Making the first map in R"
-    ]
-  },
-  {
-    "objectID": "tutorials/make-map.html#create-the-map",
-    "href": "tutorials/make-map.html#create-the-map",
-    "title": "Making the first map in R",
-    "section": "Create the map",
-    "text": "Create the map\nWe will use the tmap map-making package to create maps. While it is possible to create maps using the plot() base R function, tmap provides advanced options. tmap’s tm_shape() function is the basic building block. tm_shape() defines input data: vector or raster. tm_shape() is followed by one or more layer elements such as tm_fill(), tm_borders(), tm_polygons(), tm_dots(). We loaded two data sets Africa which shows country boundaries and range which shows the range of African Elephant.\nWe will symbolise the country boundaries fill with #C3C5B9 color and the Elephant range layer with #F2D685.\nAdd fill layer to Africa shape\n\ntm_shape(africa) + \n  tm_fill() +\n  tm_borders(col = \"white\") + \ntm_shape(range) +\n  tm_fill(fill=\"#F2D685\") +\ntm_shape(africa) +\n  tm_borders(col = \"green\")\n\n\n\n\n\n\n\n\nTo create a professional map which we can save locally, we will create add more tmap functions. We will add more elements to the map:\n\ntm_title() adds a title\ntm_text() adds text\ntm_credits() adds map credit\ntm_logo() adds an image\ntm_layout controls the map layout.\n\nVisit tmap package website for more information.\n\nafrica_elephant_range &lt;- tm_shape(africa) + \n  tm_fill(fill =\"#C3C5B9\") +\n  tm_borders(col=\"white\") + \n  tm_shape(range) + \n  tm_fill(\"#F2D685\") + \n  tm_shape(africa) + \n  tm_borders(col = \"white\") + \n  tm_text(\"NAME\", size = 0.6, xmod = 1.4, ymod = 0.8,  alpha=0.5, col = \"black\") + \n  tm_title(\"Known and Possible\\nRange of African\\nElephant\", color = \"#000000\",\n           position =c(0.05, 0.4), fontface = \"bold\", size = 1) +\n  tm_title(\"Botswana has the\\nhighest African Eephant\\npopulation of 130,000\", position =c(0.2, 0.3), size = 0.7)+\n  tm_credits(\"Data Source: ArcGIS Hub and World Population Review\\nCartographer: Dickson Mbeya\\nDate: 21 December 2025\",\n             position = c(\"left\", \"bottom\"),\n             size = 0.6, color =\"#000000\") + \n  tm_credits(\"#R4GISRSTUTORIALS\",\n             fontface = \"italic\",\n             position = c(\"right\", \"bottom\"),\n             size = 0.6, color =\"#000000\") +\n  tm_logo(\"../assets/images/r.png\", position = c(\"right\", \"top\"),height=1) +\n  tm_logo(\"../assets/data/elephant.png\", position = c(\"left\", \"top\"),height=5) + \n  tm_layout(outer.margins = c(0,0,0,0), asp = 1)\n\nPlot the map\n\nafrica_elephant_range\n\n\n\n\n\n\n\n\nTo save a map using tmap, you use the tmap_save() function.\n\n# tmap_save(africa_elephant_range, \"African Elephant range.png\")",
-    "crumbs": [
-      "Home",
-      "Getting Started",
-      "Making the first map in R"
-    ]
-  },
-  {
-    "objectID": "tutorials/queries.html",
-    "href": "tutorials/queries.html",
-    "title": "Attribute and spatial queries",
-    "section": "",
-    "text": "In this tutorial, you will learn how to select geographic features based on their association with non-spatial and also based on their location.",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Attribute and spatial queries"
-    ]
-  },
-  {
-    "objectID": "tutorials/queries.html#overview",
-    "href": "tutorials/queries.html#overview",
-    "title": "Attribute and spatial queries",
-    "section": "",
-    "text": "In this tutorial, you will learn how to select geographic features based on their association with non-spatial and also based on their location.",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Attribute and spatial queries"
-    ]
-  },
-  {
-    "objectID": "tutorials/queries.html#data-exploration",
-    "href": "tutorials/queries.html#data-exploration",
-    "title": "Attribute and spatial queries",
-    "section": "Data Exploration",
-    "text": "Data Exploration\nSet working directory\n\nsetwd(\"C:/Users/devmbeya/Documents/giswithrtutorials\") \ngetwd() #check the file path of the current directory\n\n[1] \"C:/Users/devmbeya/Documents/giswithrtutorials\"\n\n\nLoad required packages\n\nlibrary(sf)\nlibrary(dplyr)\n\nRead data\n\nafrica &lt;- st_read(\"../assets/data/vector/africa.shp\")\n\nReading layer `africa' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\vector\\africa.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 55 features and 13 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -25.36042 ymin: -46.96575 xmax: 51.41704 ymax: 37.3452\nGeodetic CRS:  WGS 84\n\nafrica_project &lt;- st_read(\"../assets/data/vector/africa_project.shp\")\n\nReading layer `africa_project' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\vector\\africa_project.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 55 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -4296552 ymin: -3854841 xmax: 3987157 ymax: 4134822\nProjected CRS: Africa_Sinusoidal\n\nafrica_continent &lt;- st_read(\"../assets/data/vector/africa_continent.shp\")\n\nReading layer `africa_continent' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\vector\\africa_continent.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 1 feature and 6 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -25.36055 ymin: -34.822 xmax: 63.49576 ymax: 37.34041\nGeodetic CRS:  WGS 84\n\ncities &lt;- st_read(\"../assets/data/vector/africa_capital_cities.shp\")\n\nReading layer `africa_capital_cities' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\vector\\africa_capital_cities.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 51 features and 14 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -23.521 ymin: -29.308 xmax: 47.528 ymax: 36.819\nGeodetic CRS:  WGS 84\n\nroads &lt;- st_read(\"../assets/data/vector/africa_roads.shp\")\n\nReading layer `africa_roads' from data source \n  `C:\\Users\\devmbeya\\Downloads\\gis-remote-sensing-r\\assets\\data\\vector\\africa_roads.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 2581 features and 30 fields\nGeometry type: MULTILINESTRING\nDimension:     XY\nBounding box:  xmin: -17.45546 ymin: -34.2343 xmax: 49.41792 ymax: 37.10583\nGeodetic CRS:  WGS 84",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Attribute and spatial queries"
-    ]
-  },
-  {
-    "objectID": "tutorials/queries.html#attribute-queries",
-    "href": "tutorials/queries.html#attribute-queries",
-    "title": "Attribute and spatial queries",
-    "section": "Attribute queries",
-    "text": "Attribute queries\nGIS data comes in two forms: spatial and attribute data. Spatial data represents the aspects of geography inform of map layers. Attribute data in GIS describe the properties or characteristics of the spatial features. A school would have its spatial data represented as geographic coordinates(latitudes and longitudes) and its attribute data would include name of the school, student enrollment, number of teachers, name of district it is located in etc.\nAttribute queries select geographic features based on their association with attributes (non-spatial data). This is achieved by using conditions such as field names(e.g., ADIMN, NAME), operators (e.g., &lt;, &gt;, =, ==) and values (e.g., Malawi, TRUE, 20000).\n\nafrica #print Africa sf\n\nSimple feature collection with 55 features and 13 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -25.36042 ymin: -46.96575 xmax: 51.41704 ymax: 37.3452\nGeodetic CRS:  WGS 84\nFirst 10 features:\n                         ADMIN ADM0_A3   POP_EST POP_RANK POP_YEAR GDP_MD\n1                     Ethiopia     ETH 112078730       17     2019  95912\n2                  South Sudan     SDS  11062113       14     2019  11998\n3                      Somalia     SOM  10192317       14     2019   4719\n4                        Kenya     KEN  52573973       16     2019  95503\n5                       Malawi     MWI  18628747       14     2019   7666\n6  United Republic of Tanzania     TZA  58005463       16     2019  63177\n7                   Somaliland     SOL   5096159       13     2014  17836\n8                      Morocco     MAR  36471769       15     2019 119700\n9               Western Sahara     SAH    603253       11     2017    907\n10       Republic of the Congo     COG   5380508       13     2019  12267\n   GDP_YEAR                   ECONOMY             INCOME_GRP CONTINENT\n1      2019 7. Least developed region          5. Low income    Africa\n2      2015 7. Least developed region          5. Low income    Africa\n3      2016 7. Least developed region          5. Low income    Africa\n4      2019   5. Emerging region: G20          5. Low income    Africa\n5      2019 7. Least developed region          5. Low income    Africa\n6      2019 7. Least developed region          5. Low income    Africa\n7      2013      6. Developing region 4. Lower middle income    Africa\n8      2019      6. Developing region 4. Lower middle income    Africa\n9      2007 7. Least developed region          5. Low income    Africa\n10     2019      6. Developing region 4. Lower middle income    Africa\n         SUBREGION                  REGION_WB               NAME_EN\n1   Eastern Africa         Sub-Saharan Africa              Ethiopia\n2   Eastern Africa         Sub-Saharan Africa           South Sudan\n3   Eastern Africa         Sub-Saharan Africa               Somalia\n4   Eastern Africa         Sub-Saharan Africa                 Kenya\n5   Eastern Africa         Sub-Saharan Africa                Malawi\n6   Eastern Africa         Sub-Saharan Africa              Tanzania\n7   Eastern Africa         Sub-Saharan Africa            Somaliland\n8  Northern Africa Middle East & North Africa               Morocco\n9  Northern Africa Middle East & North Africa        Western Sahara\n10   Middle Africa         Sub-Saharan Africa Republic of the Congo\n                         geometry\n1  MULTIPOLYGON (((34.0707 9.4...\n2  MULTIPOLYGON (((35.92084 4....\n3  MULTIPOLYGON (((46.46696 6....\n4  MULTIPOLYGON (((35.70585 4....\n5  MULTIPOLYGON (((34.96461 -1...\n6  MULTIPOLYGON (((32.92086 -9...\n7  MULTIPOLYGON (((48.93911 11...\n8  MULTIPOLYGON (((-8.817035 2...\n9  MULTIPOLYGON (((-8.817035 2...\n10 MULTIPOLYGON (((18.62639 3....\n\n# Check column names, use the names() function\nnames(africa)\n\n [1] \"ADMIN\"      \"ADM0_A3\"    \"POP_EST\"    \"POP_RANK\"   \"POP_YEAR\"  \n [6] \"GDP_MD\"     \"GDP_YEAR\"   \"ECONOMY\"    \"INCOME_GRP\" \"CONTINENT\" \n[11] \"SUBREGION\"  \"REGION_WB\"  \"NAME_EN\"    \"geometry\"  \n\n# check coordinates of the polygons\nafrica$geom\n\nGeometry set for 55 features \nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -25.36042 ymin: -46.96575 xmax: 51.41704 ymax: 37.3452\nGeodetic CRS:  WGS 84\nFirst 5 geometries:\n\n# Check the ADMIN column values\nafrica$ADMIN\n\n [1] \"Ethiopia\"                         \"South Sudan\"                     \n [3] \"Somalia\"                          \"Kenya\"                           \n [5] \"Malawi\"                           \"United Republic of Tanzania\"     \n [7] \"Somaliland\"                       \"Morocco\"                         \n [9] \"Western Sahara\"                   \"Republic of the Congo\"           \n[11] \"Democratic Republic of the Congo\" \"Namibia\"                         \n[13] \"South Africa\"                     \"Libya\"                           \n[15] \"Tunisia\"                          \"Zambia\"                          \n[17] \"Sierra Leone\"                     \"Guinea\"                          \n[19] \"Liberia\"                          \"Central African Republic\"        \n[21] \"Sudan\"                            \"Djibouti\"                        \n[23] \"Eritrea\"                          \"Ivory Coast\"                     \n[25] \"Mali\"                             \"Senegal\"                         \n[27] \"Nigeria\"                          \"Benin\"                           \n[29] \"Angola\"                           \"Botswana\"                        \n[31] \"Zimbabwe\"                         \"Chad\"                            \n[33] \"Algeria\"                          \"Mozambique\"                      \n[35] \"eSwatini\"                         \"Burundi\"                         \n[37] \"Rwanda\"                           \"Uganda\"                          \n[39] \"Lesotho\"                          \"Cameroon\"                        \n[41] \"Gabon\"                            \"Niger\"                           \n[43] \"Burkina Faso\"                     \"Togo\"                            \n[45] \"Ghana\"                            \"Guinea-Bissau\"                   \n[47] \"Egypt\"                            \"Mauritania\"                      \n[49] \"Equatorial Guinea\"                \"Gambia\"                          \n[51] \"Bir Tawil\"                        \"Madagascar\"                      \n[53] \"Comoros\"                          \"São Tomé and Principe\"           \n[55] \"Cabo Verde\"                      \n\n\n\nSubsetting vector data\nIn R, you van use dplyr subsetting functions to select a subset of the data: rows or columns. You can use the filter() and slice functions to select rows and select() to subset columns.\nSelect countries with population greater than 80 million. Use the dplyr’s filter() function.\n\n# Once again explore the data\nhead(africa)\n\nSimple feature collection with 6 features and 13 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 24.12156 ymin: -17.13534 xmax: 51.41704 ymax: 14.87953\nGeodetic CRS:  WGS 84\n                        ADMIN ADM0_A3   POP_EST POP_RANK POP_YEAR GDP_MD\n1                    Ethiopia     ETH 112078730       17     2019  95912\n2                 South Sudan     SDS  11062113       14     2019  11998\n3                     Somalia     SOM  10192317       14     2019   4719\n4                       Kenya     KEN  52573973       16     2019  95503\n5                      Malawi     MWI  18628747       14     2019   7666\n6 United Republic of Tanzania     TZA  58005463       16     2019  63177\n  GDP_YEAR                   ECONOMY    INCOME_GRP CONTINENT      SUBREGION\n1     2019 7. Least developed region 5. Low income    Africa Eastern Africa\n2     2015 7. Least developed region 5. Low income    Africa Eastern Africa\n3     2016 7. Least developed region 5. Low income    Africa Eastern Africa\n4     2019   5. Emerging region: G20 5. Low income    Africa Eastern Africa\n5     2019 7. Least developed region 5. Low income    Africa Eastern Africa\n6     2019 7. Least developed region 5. Low income    Africa Eastern Africa\n           REGION_WB     NAME_EN                       geometry\n1 Sub-Saharan Africa    Ethiopia MULTIPOLYGON (((34.0707 9.4...\n2 Sub-Saharan Africa South Sudan MULTIPOLYGON (((35.92084 4....\n3 Sub-Saharan Africa     Somalia MULTIPOLYGON (((46.46696 6....\n4 Sub-Saharan Africa       Kenya MULTIPOLYGON (((35.70585 4....\n5 Sub-Saharan Africa      Malawi MULTIPOLYGON (((34.96461 -1...\n6 Sub-Saharan Africa    Tanzania MULTIPOLYGON (((32.92086 -9...\n\n# Select countries with population greater than 80 million\npop &lt;- filter(africa, POP_EST &gt; 80000000)\npop\n\nSimple feature collection with 4 features and 13 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2.671082 ymin: -13.45835 xmax: 47.97917 ymax: 31.65648\nGeodetic CRS:  WGS 84\n                             ADMIN ADM0_A3   POP_EST POP_RANK POP_YEAR GDP_MD\n1                         Ethiopia     ETH 112078730       17     2019  95912\n2 Democratic Republic of the Congo     COD  86790567       16     2019  50400\n3                          Nigeria     NGA 200963599       17     2019 448120\n4                            Egypt     EGY 100388073       17     2019 303092\n  GDP_YEAR                   ECONOMY             INCOME_GRP CONTINENT\n1     2019 7. Least developed region          5. Low income    Africa\n2     2019 7. Least developed region          5. Low income    Africa\n3     2019   5. Emerging region: G20 4. Lower middle income    Africa\n4     2019   5. Emerging region: G20 4. Lower middle income    Africa\n        SUBREGION                  REGION_WB                          NAME_EN\n1  Eastern Africa         Sub-Saharan Africa                         Ethiopia\n2   Middle Africa         Sub-Saharan Africa Democratic Republic of the Congo\n3  Western Africa         Sub-Saharan Africa                          Nigeria\n4 Northern Africa Middle East & North Africa                            Egypt\n                        geometry\n1 MULTIPOLYGON (((34.0707 9.4...\n2 MULTIPOLYGON (((18.62639 3....\n3 MULTIPOLYGON (((3.5964 11.6...\n4 MULTIPOLYGON (((34.24835 31...\n\n# Plot the selected polygons\nplot(pop$geometry)\n\n\n\n\n\n\n\n\nSelect South Africa and Malawi polygons\n\nsouth_africa &lt;- filter(africa, NAME_EN == 'South Africa' | NAME_EN==\"Malawi\")\n\nplot(south_africa$geometry)\n\n\n\n\n\n\n\n\nSelect Malawi’s neighbors\n\nmalawi_and_neighb &lt;- filter(africa, NAME_EN == 'Malawi' | NAME_EN==\"Zambia\" | NAME_EN == \"Mozambique\" | NAME_EN == \"Tanzania\")\n\nplot(malawi_and_neighb$geometry)",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Attribute and spatial queries"
-    ]
-  },
-  {
-    "objectID": "tutorials/queries.html#spatial-queries",
-    "href": "tutorials/queries.html#spatial-queries",
-    "title": "Attribute and spatial queries",
-    "section": "Spatial queries",
-    "text": "Spatial queries\nTo select features by their location, we can use topological relations between vector geometries.\nTo select features by their location, we can use topological relations between vector geometries in sf. Common functions include:\n\nst_intersects(x, y) – returns features in x that intersect features in y.\nst_touches(x, y) – returns features in x that touch features in y (share a boundary but do not overlap).\nst_overlaps(x, y) – returns features in x that overlap features in y partially.\nst_contains(x, y) – returns features in x that contain features in y.\nst_contains_properly(x, y) – stricter version of st_contains.\nst_covers(x, y) – returns features in x that cover features in y.\nst_within(x, y) – returns features in x that are within features in y.\nst_covered_by(x, y) – returns features in x that are covered by features in y.\nst_disjoint(x, y) – returns features in x that do not intersect features in y.\n\nSelect cities that are located within East African countries.\n\nplot(cities$geometry)\n\n\n\n\n\n\n\n# Select countries within Eastern Africa\neast_africa &lt;- filter(africa, SUBREGION == 'Eastern Africa')\n\n# Plot East African countries\nplot(east_africa$geometry)\n\n# Select and plot all eastern African cities\neast_cities &lt;- st_intersection(x = cities, y=east_africa)\n\nplot(east_cities$geometry, add=TRUE, col='blue', pch=16)\n\nplot(cities$geometry, add=TRUE)",
-    "crumbs": [
-      "Home",
-      "Vector Data Analysis",
-      "Attribute and spatial queries"
     ]
   }
 ]
