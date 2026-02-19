@@ -1,47 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/getting-started.html</loc>
-    <lastmod>2026-02-19T22:16:32.337Z</lastmod>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/visualise_s2.html</loc>
+    <lastmod>2026-02-05T22:06:56.627Z</lastmod>
   </url>
   <url>
     <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/queries.html</loc>
-    <lastmod>2026-02-19T22:16:32.338Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/map-projections.html</loc>
-    <lastmod>2026-02-19T22:16:32.338Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/index.html</loc>
-    <lastmod>2026-02-19T22:16:32.338Z</lastmod>
+    <lastmod>2025-12-21T02:18:04.612Z</lastmod>
   </url>
   <url>
     <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/make-map.html</loc>
-    <lastmod>2026-02-19T22:16:32.338Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/index.html</loc>
-    <lastmod>2026-02-19T22:16:32.337Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/geometric-operations.html</loc>
-    <lastmod>2026-02-19T22:16:32.337Z</lastmod>
+    <lastmod>2026-02-06T00:13:37.517Z</lastmod>
   </url>
   <url>
     <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/install-packages.html</loc>
-    <lastmod>2026-02-19T22:16:32.338Z</lastmod>
+    <lastmod>2025-12-21T02:18:04.609Z</lastmod>
   </url>
   <url>
-    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/r-basics.html</loc>
-    <lastmod>2026-02-19T22:16:32.338Z</lastmod>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/getting-started.html</loc>
+    <lastmod>2025-12-21T02:18:04.609Z</lastmod>
   </url>
   <url>
-    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/about.html</loc>
-    <lastmod>2026-02-19T22:16:32.337Z</lastmod>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/band-math.html</loc>
+    <lastmod>2026-02-19T21:58:59.549Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/index.html</loc>
+    <lastmod>2026-02-06T08:50:18.966Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/connect/about.html</loc>
+    <lastmod>2025-12-21T02:18:04.608Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/blog/blog1.html</loc>
+    <lastmod>2025-12-21T07:35:58.174Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/connect/connect.html</loc>
+    <lastmod>2025-12-21T07:53:06.523Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/projects/my-work.html</loc>
+    <lastmod>2025-12-21T07:36:10.899Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/geometric-operations.html</loc>
+    <lastmod>2025-12-21T02:18:04.608Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/index.html</loc>
+    <lastmod>2025-12-21T02:18:04.609Z</lastmod>
   </url>
   <url>
     <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/install-r.html</loc>
-    <lastmod>2026-02-19T22:16:32.338Z</lastmod>
+    <lastmod>2026-01-23T21:04:42.764Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/map-projections.html</loc>
+    <lastmod>2026-02-06T09:12:21.407Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dickson-mbeya.github.io/rforgisrstutorials/tutorials/r-basics.html</loc>
+    <lastmod>2025-12-21T02:18:04.614Z</lastmod>
   </url>
 </urlset>
