@@ -282,39 +282,103 @@
     "text": "Getting Started\nContent coming soon…"
   },
   {
-    "objectID": "projects/my-work.html",
-    "href": "projects/my-work.html",
-    "title": "My projects",
+    "objectID": "tutorials/band-math.html",
+    "href": "tutorials/band-math.html",
+    "title": "Band Mathematics and Spectral Indices",
     "section": "",
-    "text": "Content coming soon!"
+    "text": "Remote sensing data, particularly from multispectral and hyperspectral satellites, offers extensive information about the Earth’s surface. Each spectral band captures reflected or emitted radiation at designated wavelengths, which allows for the analysis of features like vegetation, water bodies, and soil. However, analyzing a single band often yields limited insights.\nBand mathematics involves combining or manipulating these spectral bands through arithmetic operations (such as addition, subtraction, and division) to derive significant information. This serves as the basis for spectral indices, which are formulas that emphasize certain surface characteristics, including vegetation vigor, water presence, or urban areas.\nSome of the frequently utilized spectral indices comprise:\n\nNormalized Difference Vegetation Index (NDVI): Showcases the health of vegetation.\nModified Normalized Difference Water Index (MNDWI): Improves the detection of open water.\nNormalized Difference Built-up Index (NDBI): Identifies urban regions.\n\nIn this tutorial, we will illustrate how to calculate and visualize spectral indices in R, utilizing packages like raster, terra, and tmap.",
+    "crumbs": [
+      "Remote Sensing in R",
+      "Band Mathematics and Spectral Indices"
+    ]
   },
   {
-    "objectID": "blog/blog1.html",
-    "href": "blog/blog1.html",
-    "title": "Blog Article 1",
+    "objectID": "tutorials/band-math.html#introduction",
+    "href": "tutorials/band-math.html#introduction",
+    "title": "Band Mathematics and Spectral Indices",
     "section": "",
-    "text": "Content coming soon!"
+    "text": "Remote sensing data, particularly from multispectral and hyperspectral satellites, offers extensive information about the Earth’s surface. Each spectral band captures reflected or emitted radiation at designated wavelengths, which allows for the analysis of features like vegetation, water bodies, and soil. However, analyzing a single band often yields limited insights.\nBand mathematics involves combining or manipulating these spectral bands through arithmetic operations (such as addition, subtraction, and division) to derive significant information. This serves as the basis for spectral indices, which are formulas that emphasize certain surface characteristics, including vegetation vigor, water presence, or urban areas.\nSome of the frequently utilized spectral indices comprise:\n\nNormalized Difference Vegetation Index (NDVI): Showcases the health of vegetation.\nModified Normalized Difference Water Index (MNDWI): Improves the detection of open water.\nNormalized Difference Built-up Index (NDBI): Identifies urban regions.\n\nIn this tutorial, we will illustrate how to calculate and visualize spectral indices in R, utilizing packages like raster, terra, and tmap.",
+    "crumbs": [
+      "Remote Sensing in R",
+      "Band Mathematics and Spectral Indices"
+    ]
   },
   {
-    "objectID": "connect/about.html",
-    "href": "connect/about.html",
-    "title": "Dickson Mbeya",
-    "section": "",
-    "text": "linkedin\n  \n  \n    \n     Github\n  \n\n      \nDickson Mbeya is the founder of the R for GIS and Remote Sensing Mentorship Program. He is an award-winning cartographer and an experienced geospatial professional with more than a decade of experience in utilizing geospatial technologies to derive information products.\nHe currently works as Cartography Technician with the Malawi University of Science and Technology. He has have 8 years experience teaching GIS and Remote Sensing in a higher learning institution. Dickson is an expert in utilizing industry standard commercial and open source GIS, mapping and satellite image processing software and programming languages.\n\n\nMalawi University of Science and Technology, Malawi | MSc in Biodiversity Informatics | 2024\nUniversity of Malawi | BSc in Earth Sciences | 2015\n\n\n\nMalawi University of Science and Teachnology | Project Manager and Spatial Assessment Lead | January 2023 - present\nMalawi University of Science and Technology | Cartography Technician | Sept 2017 - present"
+    "objectID": "tutorials/band-math.html#overview",
+    "href": "tutorials/band-math.html#overview",
+    "title": "Band Mathematics and Spectral Indices",
+    "section": "Overview",
+    "text": "Overview\nBy the end of this tutorial, you will be able to:\n\nAccess and manage multispectral raster data in R.\nExecute band mathematics to generate new layers.\nCalculate and understand common spectral indices.\nDisplay the results with maps suitable for reports and presentations.\n\nThis practical approach will assist you in seamlessly integrating remote sensing analysis into your R workflow, promoting reproducible and efficient processing of satellite imagery.",
+    "crumbs": [
+      "Remote Sensing in R",
+      "Band Mathematics and Spectral Indices"
+    ]
   },
   {
-    "objectID": "connect/about.html#education",
-    "href": "connect/about.html#education",
-    "title": "Dickson Mbeya",
-    "section": "",
-    "text": "Malawi University of Science and Technology, Malawi | MSc in Biodiversity Informatics | 2024\nUniversity of Malawi | BSc in Earth Sciences | 2015"
+    "objectID": "tutorials/band-math.html#required-packages",
+    "href": "tutorials/band-math.html#required-packages",
+    "title": "Band Mathematics and Spectral Indices",
+    "section": "Required packages",
+    "text": "Required packages\nYou will use the following packages:terra and tmap.",
+    "crumbs": [
+      "Remote Sensing in R",
+      "Band Mathematics and Spectral Indices"
+    ]
   },
   {
-    "objectID": "connect/about.html#experience",
-    "href": "connect/about.html#experience",
-    "title": "Dickson Mbeya",
-    "section": "",
-    "text": "Malawi University of Science and Teachnology | Project Manager and Spatial Assessment Lead | January 2023 - present\nMalawi University of Science and Technology | Cartography Technician | Sept 2017 - present"
+    "objectID": "tutorials/band-math.html#load-packages",
+    "href": "tutorials/band-math.html#load-packages",
+    "title": "Band Mathematics and Spectral Indices",
+    "section": "Load packages",
+    "text": "Load packages\n\nlibrary(terra)\nlibrary(tmap)",
+    "crumbs": [
+      "Remote Sensing in R",
+      "Band Mathematics and Spectral Indices"
+    ]
+  },
+  {
+    "objectID": "tutorials/band-math.html#data",
+    "href": "tutorials/band-math.html#data",
+    "title": "Band Mathematics and Spectral Indices",
+    "section": "Data",
+    "text": "Data\nFor this tutorial, you will use Sentinel-2 Level-2A Surface Reflectance bands for Blantyre city, Malawi acquired on October 24, 2025. The Sentinel-2 Level-2A product provides atmospherically corrected surface reflectance (SR) images, derived from the corresponding Level-1C products.\nThe dataset can be accessed from here.",
+    "crumbs": [
+      "Remote Sensing in R",
+      "Band Mathematics and Spectral Indices"
+    ]
+  },
+  {
+    "objectID": "tutorials/band-math.html#spectral-properties-of-materials",
+    "href": "tutorials/band-math.html#spectral-properties-of-materials",
+    "title": "Band Mathematics and Spectral Indices",
+    "section": "Spectral Properties of Materials",
+    "text": "Spectral Properties of Materials\nDifferent surface features—such as water, bare soil, and vegetation—reflect electromagnetic radiation in distinct ways across different wavelengths. The pattern of reflected radiation across these wavelengths is known as the surface’s spectral signature.\n\n\n\nWater, vegetation, and soil spectral signatures\n\n\nSo it is easy to identify the kind of material we are dealing with in an imagery by looking examining its spectral signature.",
+    "crumbs": [
+      "Remote Sensing in R",
+      "Band Mathematics and Spectral Indices"
+    ]
+  },
+  {
+    "objectID": "tutorials/band-math.html#spectral-indices",
+    "href": "tutorials/band-math.html#spectral-indices",
+    "title": "Band Mathematics and Spectral Indices",
+    "section": "Spectral Indices",
+    "text": "Spectral Indices\nA spectral index is a mathematical formula applied to the different spectral bands of an image for each individual pixel. Often uses simple band ratios to emphasize particular surface processes or characteristics. It minimizes the influence of atmospheric conditions, sensor noise, and sun angle, enabling more reliable comparisons across space and time.\nSpectral indices have numerous applications such as, Vegetation Health, Burned Area Mapping and Fire Severity, Water Content,and geologic Mapping.",
+    "crumbs": [
+      "Remote Sensing in R",
+      "Band Mathematics and Spectral Indices"
+    ]
+  },
+  {
+    "objectID": "tutorials/band-math.html#simple-ratio",
+    "href": "tutorials/band-math.html#simple-ratio",
+    "title": "Band Mathematics and Spectral Indices",
+    "section": "1. Simple Ratio",
+    "text": "1. Simple Ratio\nSpectral ratios (or Band ratios) use two or more different bands to enhance specific spectral properties. Processing includes addition, subtraction, division, and more.\n\nNIR/RED\nWhen the Near Infrared band is divided by the red band, it results into an image that has the presence of vegetation enhanced. The brighter the tones, the denser the vegetation.\n\n\nRead data\n\nb1 &lt;- rast(\"../assets/data/bt_s2_images/s2_b01.tif\")\nb2 &lt;- rast(\"../assets/data/bt_s2_images/s2_b02.tif\")\nb3 &lt;- rast(\"../assets/data/bt_s2_images/s2_b03.tif\")\nb4 &lt;- rast(\"../assets/data/bt_s2_images/s2_b04.tif\")\nb5 &lt;- rast(\"../assets/data/bt_s2_images/s2_b05.tif\")\nb6 &lt;- rast(\"../assets/data/bt_s2_images/s2_b06.tif\")\nb7 &lt;- rast(\"../assets/data/bt_s2_images/s2_b07.tif\")\nb8 &lt;- rast(\"../assets/data/bt_s2_images/s2_b08.tif\")\nb8a &lt;- rast(\"../assets/data/bt_s2_images/s2_b8A.tif\")\nb9 &lt;- rast(\"../assets/data/bt_s2_images/s2_b09.tif\")\nb11 &lt;- rast(\"../assets/data/bt_s2_images/s2_b11.tif\")\nb12 &lt;- rast(\"../assets/data/bt_s2_images/s2_b12.tif\")\n\nRemember the properties of Sentinel-2 image bands:\n\n\n\nBand\nName\nSpatial Resolution\nWavelength (nm)\n\n\n\n\nB01\nCoastal aerosol\n60 m\n443\n\n\nB02\nBlue\n10 m\n490\n\n\nB03\nGreen\n10 m\n560\n\n\nB04\nRed\n10 m\n665\n\n\nB05\nVegetation Red Edge 1\n20 m\n705\n\n\nB06\nVegetation Red Edge 2\n20 m\n740\n\n\nB07\nVegetation Red Edge 3\n20 m\n783\n\n\nB08\nNIR\n10 m\n842\n\n\nB8A\nVegetation Red Edge\n20 m\n865\n\n\nB09\nWater Vapour\n60 m\n945\n\n\nB11\nSWIR 1\n20 m\n1610\n\n\nB12\nSWIR 2\n20 m\n2190\n\n\n\n\n# Compute a simple ratio, NIR/RED\nsr &lt;- b8/b4\n\n\n# Plot the simple ratio\nplot(sr,col = gray(0:100/100))\n\n\n\n\n\n\n\n\nIn the image, lighter tones represent areas with denser vegetation. The legend in the plot displays higher values with lighter colors and lower values with darker colors.\nConfirm the vegetation enhancement by plotting a false color composite. In a false color composite, regions with denser vegetation appear darker red, while urban areas and bare soil appear gray or tan, and water bodies are shown in shades of blue or black.\n\ns2_fcc &lt;- c(b8, b4, b3)\npar(mfrow = c(2,2))\nplot(sr,col = gray(0:100/100), main=\"Simple Ratio (NIR/RED)\")\nplotRGB(s2_fcc, stretch=\"hist\", main=\"False Color Composite\") \ntitle(\"False Color Composite\")\n\n\n\n\n\n\n\n\n\n\n2. Normalised Difference Vegetation Index (NDVI)\nNDVI is one of the commonly used spectral indices used for vegetation health monitoring.\nNDVI is based on the Based on the relationship between red and near-infrared wavelengths. Chlorophyll strongly absorbs visible (red). Plant structure strongly reflects near-infrared.\nNDVI is calculated: \\[\nNDVI = \\frac{NIR - Red}{NIR + Red}\n\\]’\nWhere:\n- NIR = Near Infrared band\n- Red = Red band\nNDVI values range from -1.0 to 1.0. Negative values to 0 mean no green leaves. Values close to 1 indicate the highest possible density of green leaves.\nFor Sentinel-2: \\[\nNDVI = \\frac{b8 - b4}{b8 + b4}\n\\]\n\nndvi &lt;- ((b8-b4)/(b8 + b4))\n\nPlot ndvi map\n\nplot(ndvi,col = gray(0:100/100))\n\n\n\n\n\n\n\n\nThe NDVI image produces pixel values that range between –1 and +1. Values approaching +1 appear brighter and typically indicate denser, healthier vegetation. In this particular image, the values span from –0.10 to +0.6, as there are no pixels representing the extreme ends of the full NDVI range.\nThe gray scale image doesn’t look impressing. You will use a custom palette commonly used for visualising NDVI.\n\nCreate color palette\n\nndviPalette &lt;- c('#FFFFFF', '#CE7E45', '#DF923D', '#F1B555', '#FCD163', '#99B718','#74A901', '#66A000', '#529400', '#3E8601', '#207401', '#056201', '#004C00', '#023B01', '#012E01', '#011D01', '#011301')\n\n\n#plot\nplot(ndvi, col=ndviPalette, main=\"Blantyre City NDVI\")\n\n\n\n\n\n\n\n\nWhat if we used tmap for the final NDVI map?\n\nndviMap &lt;- tm_shape(ndvi) +\n  tm_raster(\n    col.scale = tm_scale_continuous(values = ndviPalette),\n    col.legend = tm_legend(title = \"NDVI\")\n  ) +\n  tm_title(\"Blantyre City NDVI (24 October 2025)\", color = \"#011D01\") +\n  tm_credits(\n    \"Data Source: Copernicus Browser\",\n    position = c(\"left\", \"bottom\"),\n    size = 0.5\n  ) +\n  tm_credits(\n    \"Date: 19 February 2026\",\n    position = c(\"left\", \"bottom\"),\n    size = 0.5\n  ) +\n  tm_credits(\n    \"Author: Your Fullname\",\n    fontface = \"italic\",\n    position = c(\"left\", \"bottom\"),\n    size = 0.5\n  ) +\n  tm_graticules(\n    lines = FALSE,\n    col = \"grey\",\n    labels.size = 0.7\n  )\n\n\n# Display the map\nndviMap\n\n\n\n\n\n\n\n\nTo save the map,\n\n#tmap_save(ndviMap, \"Blantyre City NDVI.png\")\n\n\n\n\n3. Modified Normalised Difference Water Index (MNDWI)\nThe Modified Normalized Difference Water Index (MNDWI) utilizes the green and SWIR bands to enhance the detection of open water features, while reducing the influence of built-up areas that can sometimes appear similar to water in other indices.\n\\[\nMNDWI = \\frac{Green - SWIR}{Green + SWIR}\n\\]\nWhere:\n- Green = pixel values from the green band\n- SWIR = pixel values from the short-wave infrared band\nIn case of Sentinel-2 imagery, \\[\nMNDWI = \\frac{b3 - b11}{b3 + b11}\n\\]\n\n# Compute MNDWI\n\nb3_20m &lt;- resample(b3, b11, method=\"bilinear\") # Resample b3 to 20m resolution of b11\n\nmndwi &lt;- ((b3_20m - b11)/(b3_20m + b11))\n\n\n# Plot MNDWI\nplot(mndwi)\n\n\n\n\n\n\n\n\nOpen water features typically have positive values, while built-up land, soil, and vegetation produce negative values, making them easier to distinguish.\nMNDWI can be used for mapping flood extent and to detect surface water. Positive values indicate high probability of water while negative values indicate soil, vegetation, or built-up areas.\nWe would create a better map for MNDWI using tmap:\n\n# Define colors\nmndwiParams &lt;- c(\"brown\", \"white\", \"blue\", \"skyblue\")\n\n\n#Define the map object\nmndwiMap &lt;- tm_shape(mndwi) +\n  tm_raster(col.scale = tm_scale_continuous(values = mndwiParams),\n            col.legend = tm_legend(title = \"MNDWI\")) +\n  tm_title(\"Blantyre City MNDWI (24 October 2025)\", color = \"blue\") +\n  tm_credits(\n    \"Data Source: Copernicus Browser\",\n    position = c(\"left\", \"bottom\"),\n    size = 0.5\n  ) +\n  tm_credits(\"Date: 19 February 2026\",\n             position = c(\"left\", \"bottom\"),\n             size = 0.5) +\n  tm_credits(\n    \"Author: Your name\",\n    fontface = \"italic\",\n    position = c(\"left\", \"bottom\"),\n    size = 0.5\n  ) +\n  tm_grid(lines = FALSE) +\n  tm_graticules(lines = FALSE,\n                col = \"grey\",\n                labels.size = 0.7)\n\n\n#Display the map\nmndwiMap\n\n\n\n\n\n\n\n\nTo save the map,\n\n#tmap_save(mndwiMap, \"Blantyre City MNDWI.png\")",
+    "crumbs": [
+      "Remote Sensing in R",
+      "Band Mathematics and Spectral Indices"
+    ]
   },
   {
     "objectID": "index.html",
@@ -405,6 +469,41 @@
     ]
   },
   {
+    "objectID": "connect/about.html",
+    "href": "connect/about.html",
+    "title": "Dickson Mbeya",
+    "section": "",
+    "text": "linkedin\n  \n  \n    \n     Github\n  \n\n      \nDickson Mbeya is the founder of the R for GIS and Remote Sensing Mentorship Program. He is an award-winning cartographer and an experienced geospatial professional with more than a decade of experience in utilizing geospatial technologies to derive information products.\nHe currently works as Cartography Technician with the Malawi University of Science and Technology. He has have 8 years experience teaching GIS and Remote Sensing in a higher learning institution. Dickson is an expert in utilizing industry standard commercial and open source GIS, mapping and satellite image processing software and programming languages.\n\n\nMalawi University of Science and Technology, Malawi | MSc in Biodiversity Informatics | 2024\nUniversity of Malawi | BSc in Earth Sciences | 2015\n\n\n\nMalawi University of Science and Teachnology | Project Manager and Spatial Assessment Lead | January 2023 - present\nMalawi University of Science and Technology | Cartography Technician | Sept 2017 - present"
+  },
+  {
+    "objectID": "connect/about.html#education",
+    "href": "connect/about.html#education",
+    "title": "Dickson Mbeya",
+    "section": "",
+    "text": "Malawi University of Science and Technology, Malawi | MSc in Biodiversity Informatics | 2024\nUniversity of Malawi | BSc in Earth Sciences | 2015"
+  },
+  {
+    "objectID": "connect/about.html#experience",
+    "href": "connect/about.html#experience",
+    "title": "Dickson Mbeya",
+    "section": "",
+    "text": "Malawi University of Science and Teachnology | Project Manager and Spatial Assessment Lead | January 2023 - present\nMalawi University of Science and Technology | Cartography Technician | Sept 2017 - present"
+  },
+  {
+    "objectID": "blog/blog1.html",
+    "href": "blog/blog1.html",
+    "title": "Blog Article 1",
+    "section": "",
+    "text": "Content coming soon!"
+  },
+  {
+    "objectID": "projects/my-work.html",
+    "href": "projects/my-work.html",
+    "title": "My projects",
+    "section": "",
+    "text": "Content coming soon!"
+  },
+  {
     "objectID": "tutorials/geometric-operations.html",
     "href": "tutorials/geometric-operations.html",
     "title": "Geometric operations",
@@ -420,7 +519,7 @@
     "href": "tutorials/index.html",
     "title": "Tutorials",
     "section": "",
-    "text": "Browse all tutorials below.\n\n\n\n\n\n\n\n\n\n\n\nAttribute and spatial queries\n\n\n\n\n\n\n\n\n\n\n\n\n\nGeometric operations\n\n\n\n\n\n\n\n\n\n\n\n\n\nGetting Started\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall GIS and remote sensing R packages\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall R and RStudio\n\n\n\n\n\n\n\n\n\n\n\n\n\nMaking the first map in R\n\n\n\n\n\n\n\n\n\n\n\n\n\nR basics\n\n\n\n\n\n\n\n\n\n\n\n\n\nVisualising Sentinel-2 Multispectral Data in R\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorking with map projections\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Browse all tutorials below.\n\n\n\n\n\n\n\n\n\n\n\nAttribute and spatial queries\n\n\n\n\n\n\n\n\n\n\n\n\n\nBand Mathematics and Spectral Indices\n\n\n\n\n\n\n\n\n\n\n\n\n\nGeometric operations\n\n\n\n\n\n\n\n\n\n\n\n\n\nGetting Started\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall GIS and remote sensing R packages\n\n\n\n\n\n\n\n\n\n\n\n\n\nInstall R and RStudio\n\n\n\n\n\n\n\n\n\n\n\n\n\nMaking the first map in R\n\n\n\n\n\n\n\n\n\n\n\n\n\nR basics\n\n\n\n\n\n\n\n\n\n\n\n\n\nVisualising Sentinel-2 Multispectral Data in R\n\n\n\n\n\n\n\n\n\n\n\n\n\nWorking with map projections\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "tutorials/install-r.html",

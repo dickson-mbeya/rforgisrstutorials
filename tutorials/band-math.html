@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Attribute and spatial queries – R for GIS and Remote Sensing Tutorials</title>
+<title>Band Mathematics and Spectral Indices – R for GIS and Remote Sensing Tutorials</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -105,6 +105,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
@@ -118,7 +147,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../tutorials/queries.html">Vector Data Analysis</a></li><li class="breadcrumb-item"><a href="../tutorials/queries.html">Attribute and spatial queries</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../tutorials/visualise_s2.html">Remote Sensing in R</a></li><li class="breadcrumb-item"><a href="../tutorials/band-math.html">Band Mathematics and Spectral Indices</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -214,7 +243,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorials/queries.html" class="sidebar-item-text sidebar-link active">
+  <a href="../tutorials/queries.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Attribute and spatial queries</span></a>
   </div>
 </li>
@@ -257,7 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorials/band-math.html" class="sidebar-item-text sidebar-link">
+  <a href="../tutorials/band-math.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Band Mathematics and Spectral Indices</span></a>
   </div>
 </li>
@@ -281,19 +310,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#data-exploration" id="toc-data-exploration" class="nav-link" data-scroll-target="#data-exploration">Data Exploration</a></li>
-  <li><a href="#attribute-queries" id="toc-attribute-queries" class="nav-link" data-scroll-target="#attribute-queries">Attribute queries</a></li>
-  <li><a href="#spatial-queries" id="toc-spatial-queries" class="nav-link" data-scroll-target="#spatial-queries">Spatial queries</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#required-packages" id="toc-required-packages" class="nav-link" data-scroll-target="#required-packages">Required packages</a></li>
+  <li><a href="#load-packages" id="toc-load-packages" class="nav-link" data-scroll-target="#load-packages">Load packages</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#spectral-properties-of-materials" id="toc-spectral-properties-of-materials" class="nav-link" data-scroll-target="#spectral-properties-of-materials">Spectral Properties of Materials</a></li>
+  <li><a href="#spectral-indices" id="toc-spectral-indices" class="nav-link" data-scroll-target="#spectral-indices">Spectral Indices</a></li>
+  <li><a href="#simple-ratio" id="toc-simple-ratio" class="nav-link" data-scroll-target="#simple-ratio">1. Simple Ratio</a>
+  <ul class="collapse">
+  <li><a href="#normalised-difference-vegetation-index-ndvi" id="toc-normalised-difference-vegetation-index-ndvi" class="nav-link" data-scroll-target="#normalised-difference-vegetation-index-ndvi">2. Normalised Difference Vegetation Index (NDVI)</a></li>
+  <li><a href="#modified-normalised-difference-water-index-mndwi" id="toc-modified-normalised-difference-water-index-mndwi" class="nav-link" data-scroll-target="#modified-normalised-difference-water-index-mndwi">3. Modified Normalised Difference Water Index (MNDWI)</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../tutorials/queries.html">Vector Data Analysis</a></li><li class="breadcrumb-item"><a href="../tutorials/queries.html">Attribute and spatial queries</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../tutorials/visualise_s2.html">Remote Sensing in R</a></li><li class="breadcrumb-item"><a href="../tutorials/band-math.html">Band Mathematics and Spectral Indices</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Attribute and spatial queries</h1>
+<h1 class="title">Band Mathematics and Spectral Indices</h1>
 </div>
 
 
@@ -310,342 +347,374 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Remote sensing data, particularly from multispectral and hyperspectral satellites, offers extensive information about the Earth’s surface. Each spectral band captures reflected or emitted radiation at designated wavelengths, which allows for the analysis of features like vegetation, water bodies, and soil. However, analyzing a single band often yields limited insights.</p>
+<p>Band mathematics involves combining or manipulating these spectral bands through arithmetic operations (such as addition, subtraction, and division) to derive significant information. This serves as the basis for spectral indices, which are formulas that emphasize certain surface characteristics, including vegetation vigor, water presence, or urban areas.</p>
+<p>Some of the frequently utilized spectral indices comprise:</p>
+<ul>
+<li>Normalized Difference Vegetation Index (NDVI): Showcases the health of vegetation.</li>
+<li>Modified Normalized Difference Water Index (MNDWI): Improves the detection of open water.</li>
+<li>Normalized Difference Built-up Index (NDBI): Identifies urban regions.</li>
+</ul>
+<p>In this tutorial, we will illustrate how to calculate and visualize spectral indices in R, utilizing packages like raster, terra, and tmap.</p>
+</section>
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>In this tutorial, you will learn how to select geographic features based on their association with non-spatial and also based on their location.</p>
-</section>
-<section id="data-exploration" class="level2">
-<h2 class="anchored" data-anchor-id="data-exploration">Data Exploration</h2>
-<p>Set working directory</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/Users/devmbeya/Documents/giswithrtutorials"</span>) </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>() <span class="co">#check the file path of the current directory</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "C:/Users/devmbeya/Documents/giswithrtutorials"</code></pre>
-</div>
-</div>
-<p>Load required packages</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Read data</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>africa <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"../assets/data/vector/africa.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Reading layer `africa' from data source 
-  `C:\Users\devmbeya\Downloads\gis-remote-sensing-r\assets\data\vector\africa.shp' 
-  using driver `ESRI Shapefile'
-Simple feature collection with 55 features and 13 fields
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: -25.36042 ymin: -46.96575 xmax: 51.41704 ymax: 37.3452
-Geodetic CRS:  WGS 84</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>africa_project <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"../assets/data/vector/africa_project.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Reading layer `africa_project' from data source 
-  `C:\Users\devmbeya\Downloads\gis-remote-sensing-r\assets\data\vector\africa_project.shp' 
-  using driver `ESRI Shapefile'
-Simple feature collection with 55 features and 15 fields
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: -4296552 ymin: -3854841 xmax: 3987157 ymax: 4134822
-Projected CRS: Africa_Sinusoidal</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>africa_continent <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"../assets/data/vector/africa_continent.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Reading layer `africa_continent' from data source 
-  `C:\Users\devmbeya\Downloads\gis-remote-sensing-r\assets\data\vector\africa_continent.shp' 
-  using driver `ESRI Shapefile'
-Simple feature collection with 1 feature and 6 fields
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: -25.36055 ymin: -34.822 xmax: 63.49576 ymax: 37.34041
-Geodetic CRS:  WGS 84</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"../assets/data/vector/africa_capital_cities.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Reading layer `africa_capital_cities' from data source 
-  `C:\Users\devmbeya\Downloads\gis-remote-sensing-r\assets\data\vector\africa_capital_cities.shp' 
-  using driver `ESRI Shapefile'
-Simple feature collection with 51 features and 14 fields
-Geometry type: POINT
-Dimension:     XY
-Bounding box:  xmin: -23.521 ymin: -29.308 xmax: 47.528 ymax: 36.819
-Geodetic CRS:  WGS 84</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>roads <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"../assets/data/vector/africa_roads.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Reading layer `africa_roads' from data source 
-  `C:\Users\devmbeya\Downloads\gis-remote-sensing-r\assets\data\vector\africa_roads.shp' 
-  using driver `ESRI Shapefile'
-Simple feature collection with 2581 features and 30 fields
-Geometry type: MULTILINESTRING
-Dimension:     XY
-Bounding box:  xmin: -17.45546 ymin: -34.2343 xmax: 49.41792 ymax: 37.10583
-Geodetic CRS:  WGS 84</code></pre>
-</div>
-</div>
-</section>
-<section id="attribute-queries" class="level2">
-<h2 class="anchored" data-anchor-id="attribute-queries">Attribute queries</h2>
-<p>GIS data comes in two forms: spatial and attribute data. Spatial data represents the aspects of geography inform of map layers. Attribute data in GIS describe the properties or characteristics of the spatial features. A school would have its spatial data represented as geographic coordinates(latitudes and longitudes) and its attribute data would include name of the school, student enrollment, number of teachers, name of district it is located in etc.</p>
-<p>Attribute queries select geographic features based on their association with attributes (non-spatial data). This is achieved by using conditions such as field names(e.g., <code>ADIMN</code>, <code>NAME</code>), operators (e.g., <code>&lt;</code>, <code>&gt;</code>, <code>=</code>, <code>==</code>) and values (e.g., <code>Malawi</code>, <code>TRUE</code>, <code>20000</code>).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>africa <span class="co">#print Africa sf</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Simple feature collection with 55 features and 13 fields
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: -25.36042 ymin: -46.96575 xmax: 51.41704 ymax: 37.3452
-Geodetic CRS:  WGS 84
-First 10 features:
-                         ADMIN ADM0_A3   POP_EST POP_RANK POP_YEAR GDP_MD
-1                     Ethiopia     ETH 112078730       17     2019  95912
-2                  South Sudan     SDS  11062113       14     2019  11998
-3                      Somalia     SOM  10192317       14     2019   4719
-4                        Kenya     KEN  52573973       16     2019  95503
-5                       Malawi     MWI  18628747       14     2019   7666
-6  United Republic of Tanzania     TZA  58005463       16     2019  63177
-7                   Somaliland     SOL   5096159       13     2014  17836
-8                      Morocco     MAR  36471769       15     2019 119700
-9               Western Sahara     SAH    603253       11     2017    907
-10       Republic of the Congo     COG   5380508       13     2019  12267
-   GDP_YEAR                   ECONOMY             INCOME_GRP CONTINENT
-1      2019 7. Least developed region          5. Low income    Africa
-2      2015 7. Least developed region          5. Low income    Africa
-3      2016 7. Least developed region          5. Low income    Africa
-4      2019   5. Emerging region: G20          5. Low income    Africa
-5      2019 7. Least developed region          5. Low income    Africa
-6      2019 7. Least developed region          5. Low income    Africa
-7      2013      6. Developing region 4. Lower middle income    Africa
-8      2019      6. Developing region 4. Lower middle income    Africa
-9      2007 7. Least developed region          5. Low income    Africa
-10     2019      6. Developing region 4. Lower middle income    Africa
-         SUBREGION                  REGION_WB               NAME_EN
-1   Eastern Africa         Sub-Saharan Africa              Ethiopia
-2   Eastern Africa         Sub-Saharan Africa           South Sudan
-3   Eastern Africa         Sub-Saharan Africa               Somalia
-4   Eastern Africa         Sub-Saharan Africa                 Kenya
-5   Eastern Africa         Sub-Saharan Africa                Malawi
-6   Eastern Africa         Sub-Saharan Africa              Tanzania
-7   Eastern Africa         Sub-Saharan Africa            Somaliland
-8  Northern Africa Middle East &amp; North Africa               Morocco
-9  Northern Africa Middle East &amp; North Africa        Western Sahara
-10   Middle Africa         Sub-Saharan Africa Republic of the Congo
-                         geometry
-1  MULTIPOLYGON (((34.0707 9.4...
-2  MULTIPOLYGON (((35.92084 4....
-3  MULTIPOLYGON (((46.46696 6....
-4  MULTIPOLYGON (((35.70585 4....
-5  MULTIPOLYGON (((34.96461 -1...
-6  MULTIPOLYGON (((32.92086 -9...
-7  MULTIPOLYGON (((48.93911 11...
-8  MULTIPOLYGON (((-8.817035 2...
-9  MULTIPOLYGON (((-8.817035 2...
-10 MULTIPOLYGON (((18.62639 3....</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># Check column names, use the names() function</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">names</span>(africa)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "ADMIN"      "ADM0_A3"    "POP_EST"    "POP_RANK"   "POP_YEAR"  
- [6] "GDP_MD"     "GDP_YEAR"   "ECONOMY"    "INCOME_GRP" "CONTINENT" 
-[11] "SUBREGION"  "REGION_WB"  "NAME_EN"    "geometry"  </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># check coordinates of the polygons</span></span>
-<span id="cb18-2"><a href="#cb18-2"></a>africa<span class="sc">$</span>geom</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Geometry set for 55 features 
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: -25.36042 ymin: -46.96575 xmax: 51.41704 ymax: 37.3452
-Geodetic CRS:  WGS 84
-First 5 geometries:</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># Check the ADMIN column values</span></span>
-<span id="cb20-2"><a href="#cb20-2"></a>africa<span class="sc">$</span>ADMIN</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "Ethiopia"                         "South Sudan"                     
- [3] "Somalia"                          "Kenya"                           
- [5] "Malawi"                           "United Republic of Tanzania"     
- [7] "Somaliland"                       "Morocco"                         
- [9] "Western Sahara"                   "Republic of the Congo"           
-[11] "Democratic Republic of the Congo" "Namibia"                         
-[13] "South Africa"                     "Libya"                           
-[15] "Tunisia"                          "Zambia"                          
-[17] "Sierra Leone"                     "Guinea"                          
-[19] "Liberia"                          "Central African Republic"        
-[21] "Sudan"                            "Djibouti"                        
-[23] "Eritrea"                          "Ivory Coast"                     
-[25] "Mali"                             "Senegal"                         
-[27] "Nigeria"                          "Benin"                           
-[29] "Angola"                           "Botswana"                        
-[31] "Zimbabwe"                         "Chad"                            
-[33] "Algeria"                          "Mozambique"                      
-[35] "eSwatini"                         "Burundi"                         
-[37] "Rwanda"                           "Uganda"                          
-[39] "Lesotho"                          "Cameroon"                        
-[41] "Gabon"                            "Niger"                           
-[43] "Burkina Faso"                     "Togo"                            
-[45] "Ghana"                            "Guinea-Bissau"                   
-[47] "Egypt"                            "Mauritania"                      
-[49] "Equatorial Guinea"                "Gambia"                          
-[51] "Bir Tawil"                        "Madagascar"                      
-[53] "Comoros"                          "São Tomé and Principe"           
-[55] "Cabo Verde"                      </code></pre>
-</div>
-</div>
-<section id="subsetting-vector-data" class="level4">
-<h4 class="anchored" data-anchor-id="subsetting-vector-data">Subsetting vector data</h4>
-<p>In R, you van use <code>dplyr</code> subsetting functions to select a subset of the data: rows or columns. You can use the <code>filter()</code> and <code>slice</code> functions to select rows and <code>select()</code> to subset columns.</p>
-<p>Select countries with population greater than 80 million. Use the dplyr’s <code>filter()</code> function.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Once again explore the data</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(africa)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Simple feature collection with 6 features and 13 fields
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: 24.12156 ymin: -17.13534 xmax: 51.41704 ymax: 14.87953
-Geodetic CRS:  WGS 84
-                        ADMIN ADM0_A3   POP_EST POP_RANK POP_YEAR GDP_MD
-1                    Ethiopia     ETH 112078730       17     2019  95912
-2                 South Sudan     SDS  11062113       14     2019  11998
-3                     Somalia     SOM  10192317       14     2019   4719
-4                       Kenya     KEN  52573973       16     2019  95503
-5                      Malawi     MWI  18628747       14     2019   7666
-6 United Republic of Tanzania     TZA  58005463       16     2019  63177
-  GDP_YEAR                   ECONOMY    INCOME_GRP CONTINENT      SUBREGION
-1     2019 7. Least developed region 5. Low income    Africa Eastern Africa
-2     2015 7. Least developed region 5. Low income    Africa Eastern Africa
-3     2016 7. Least developed region 5. Low income    Africa Eastern Africa
-4     2019   5. Emerging region: G20 5. Low income    Africa Eastern Africa
-5     2019 7. Least developed region 5. Low income    Africa Eastern Africa
-6     2019 7. Least developed region 5. Low income    Africa Eastern Africa
-           REGION_WB     NAME_EN                       geometry
-1 Sub-Saharan Africa    Ethiopia MULTIPOLYGON (((34.0707 9.4...
-2 Sub-Saharan Africa South Sudan MULTIPOLYGON (((35.92084 4....
-3 Sub-Saharan Africa     Somalia MULTIPOLYGON (((46.46696 6....
-4 Sub-Saharan Africa       Kenya MULTIPOLYGON (((35.70585 4....
-5 Sub-Saharan Africa      Malawi MULTIPOLYGON (((34.96461 -1...
-6 Sub-Saharan Africa    Tanzania MULTIPOLYGON (((32.92086 -9...</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select countries with population greater than 80 million</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">&lt;-</span> <span class="fu">filter</span>(africa, POP_EST <span class="sc">&gt;</span> <span class="dv">80000000</span>)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>pop</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Simple feature collection with 4 features and 13 fields
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: 2.671082 ymin: -13.45835 xmax: 47.97917 ymax: 31.65648
-Geodetic CRS:  WGS 84
-                             ADMIN ADM0_A3   POP_EST POP_RANK POP_YEAR GDP_MD
-1                         Ethiopia     ETH 112078730       17     2019  95912
-2 Democratic Republic of the Congo     COD  86790567       16     2019  50400
-3                          Nigeria     NGA 200963599       17     2019 448120
-4                            Egypt     EGY 100388073       17     2019 303092
-  GDP_YEAR                   ECONOMY             INCOME_GRP CONTINENT
-1     2019 7. Least developed region          5. Low income    Africa
-2     2019 7. Least developed region          5. Low income    Africa
-3     2019   5. Emerging region: G20 4. Lower middle income    Africa
-4     2019   5. Emerging region: G20 4. Lower middle income    Africa
-        SUBREGION                  REGION_WB                          NAME_EN
-1  Eastern Africa         Sub-Saharan Africa                         Ethiopia
-2   Middle Africa         Sub-Saharan Africa Democratic Republic of the Congo
-3  Western Africa         Sub-Saharan Africa                          Nigeria
-4 Northern Africa Middle East &amp; North Africa                            Egypt
-                        geometry
-1 MULTIPOLYGON (((34.0707 9.4...
-2 MULTIPOLYGON (((18.62639 3....
-3 MULTIPOLYGON (((3.5964 11.6...
-4 MULTIPOLYGON (((34.24835 31...</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the selected polygons</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pop<span class="sc">$</span>geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="queries_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Select South Africa and Malawi polygons</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>south_africa <span class="ot">&lt;-</span> <span class="fu">filter</span>(africa, NAME_EN <span class="sc">==</span> <span class="st">'South Africa'</span> <span class="sc">|</span> NAME_EN<span class="sc">==</span><span class="st">"Malawi"</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(south_africa<span class="sc">$</span>geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="queries_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Select Malawi’s neighbors</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>malawi_and_neighb <span class="ot">&lt;-</span> <span class="fu">filter</span>(africa, NAME_EN <span class="sc">==</span> <span class="st">'Malawi'</span> <span class="sc">|</span> NAME_EN<span class="sc">==</span><span class="st">"Zambia"</span> <span class="sc">|</span> NAME_EN <span class="sc">==</span> <span class="st">"Mozambique"</span> <span class="sc">|</span> NAME_EN <span class="sc">==</span> <span class="st">"Tanzania"</span>)</span>
-<span id="cb28-2"><a href="#cb28-2"></a></span>
-<span id="cb28-3"><a href="#cb28-3"></a><span class="fu">plot</span>(malawi_and_neighb<span class="sc">$</span>geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="queries_files/figure-html/Select multiple attributes-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-</section>
-<section id="spatial-queries" class="level2">
-<h2 class="anchored" data-anchor-id="spatial-queries">Spatial queries</h2>
-<p>To select features by their location, we can use topological relations between vector geometries.</p>
-<p>To select features by their <strong>location</strong>, we can use topological relations between vector geometries in <code>sf</code>. Common functions include:</p>
+<p>By the end of this tutorial, you will be able to:</p>
 <ul>
-<li><code>st_intersects(x, y)</code> – returns features in <code>x</code> that <strong>intersect</strong> features in <code>y</code>.</li>
-<li><code>st_touches(x, y)</code> – returns features in <code>x</code> that <strong>touch</strong> features in <code>y</code> (share a boundary but do not overlap).</li>
-<li><code>st_overlaps(x, y)</code> – returns features in <code>x</code> that <strong>overlap</strong> features in <code>y</code> partially.</li>
-<li><code>st_contains(x, y)</code> – returns features in <code>x</code> that <strong>contain</strong> features in <code>y</code>.</li>
-<li><code>st_contains_properly(x, y)</code> – stricter version of <code>st_contains</code>.</li>
-<li><code>st_covers(x, y)</code> – returns features in <code>x</code> that <strong>cover</strong> features in <code>y</code>.</li>
-<li><code>st_within(x, y)</code> – returns features in <code>x</code> that are <strong>within</strong> features in <code>y</code>.</li>
-<li><code>st_covered_by(x, y)</code> – returns features in <code>x</code> that are <strong>covered by</strong> features in <code>y</code>.</li>
-<li><code>st_disjoint(x, y)</code> – returns features in <code>x</code> that <strong>do not intersect</strong> features in <code>y</code>.</li>
+<li>Access and manage multispectral raster data in R.</li>
+<li>Execute band mathematics to generate new layers.</li>
+<li>Calculate and understand common spectral indices.</li>
+<li>Display the results with maps suitable for reports and presentations.</li>
 </ul>
-<p>Select cities that are located within East African countries.</p>
+<p>This practical approach will assist you in seamlessly integrating remote sensing analysis into your R workflow, promoting reproducible and efficient processing of satellite imagery.</p>
+</section>
+<section id="required-packages" class="level2">
+<h2 class="anchored" data-anchor-id="required-packages">Required packages</h2>
+<p>You will use the following packages:<code>terra</code> and <code>tmap</code>.</p>
+</section>
+<section id="load-packages" class="level2">
+<h2 class="anchored" data-anchor-id="load-packages">Load packages</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="fu">plot</span>(cities<span class="sc">$</span>geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tmap)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>For this tutorial, you will use Sentinel-2 Level-2A Surface Reflectance bands for Blantyre city, Malawi acquired on October 24, 2025. The Sentinel-2 Level-2A product provides atmospherically corrected surface reflectance (SR) images, derived from the corresponding Level-1C products.</p>
+<p>The dataset can be accessed from <a href="https://github.com/dickson-mbeya/rforgisrstutorials/tree/main/assets/data">here</a>.</p>
+</section>
+<section id="spectral-properties-of-materials" class="level2">
+<h2 class="anchored" data-anchor-id="spectral-properties-of-materials">Spectral Properties of Materials</h2>
+<p>Different surface features—such as water, bare soil, and vegetation—reflect electromagnetic radiation in distinct ways across different wavelengths. The pattern of reflected radiation across these wavelengths is known as the surface’s <em>spectral signature</em>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://image2url.com/r2/default/images/1771537086274-14544590-75dc-4fd1-acee-23ced854644e.png" class="img-fluid figure-img"></p>
+<figcaption>Water, vegetation, and soil spectral signatures</figcaption>
+</figure>
+</div>
+<p>So it is easy to identify the kind of material we are dealing with in an imagery by looking examining its spectral signature.</p>
+</section>
+<section id="spectral-indices" class="level2">
+<h2 class="anchored" data-anchor-id="spectral-indices">Spectral Indices</h2>
+<p>A spectral index is a mathematical formula applied to the different spectral bands of an image for each individual pixel. Often uses simple band ratios to emphasize particular surface processes or characteristics. It minimizes the influence of atmospheric conditions, sensor noise, and sun angle, enabling more reliable comparisons across space and time.</p>
+<p>Spectral indices have numerous applications such as, Vegetation Health, Burned Area Mapping and Fire Severity, Water Content,and geologic Mapping.</p>
+</section>
+<section id="simple-ratio" class="level2">
+<h2 class="anchored" data-anchor-id="simple-ratio">1. Simple Ratio</h2>
+<p>Spectral ratios (or Band ratios) use two or more different bands to enhance specific spectral properties. Processing includes addition, subtraction, division, and more.</p>
+<section id="nirred" class="level4">
+<h4 class="anchored" data-anchor-id="nirred">NIR/RED</h4>
+<p>When the Near Infrared band is divided by the red band, it results into an image that has the presence of vegetation enhanced. The brighter the tones, the denser the vegetation.</p>
+</section>
+<section id="read-data" class="level4">
+<h4 class="anchored" data-anchor-id="read-data">Read data</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b01.tif"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b02.tif"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>b3 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b03.tif"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>b4 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b04.tif"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>b5 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b05.tif"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>b6 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b06.tif"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>b7 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b07.tif"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>b8 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b08.tif"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>b8a <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b8A.tif"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>b9 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b09.tif"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>b11 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b11.tif"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>b12 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"../assets/data/bt_s2_images/s2_b12.tif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Remember the properties of Sentinel-2 image bands:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Band</th>
+<th>Name</th>
+<th>Spatial Resolution</th>
+<th>Wavelength (nm)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>B01</td>
+<td>Coastal aerosol</td>
+<td>60 m</td>
+<td>443</td>
+</tr>
+<tr class="even">
+<td>B02</td>
+<td>Blue</td>
+<td>10 m</td>
+<td>490</td>
+</tr>
+<tr class="odd">
+<td>B03</td>
+<td>Green</td>
+<td>10 m</td>
+<td>560</td>
+</tr>
+<tr class="even">
+<td>B04</td>
+<td>Red</td>
+<td>10 m</td>
+<td>665</td>
+</tr>
+<tr class="odd">
+<td>B05</td>
+<td>Vegetation Red Edge 1</td>
+<td>20 m</td>
+<td>705</td>
+</tr>
+<tr class="even">
+<td>B06</td>
+<td>Vegetation Red Edge 2</td>
+<td>20 m</td>
+<td>740</td>
+</tr>
+<tr class="odd">
+<td>B07</td>
+<td>Vegetation Red Edge 3</td>
+<td>20 m</td>
+<td>783</td>
+</tr>
+<tr class="even">
+<td>B08</td>
+<td>NIR</td>
+<td>10 m</td>
+<td>842</td>
+</tr>
+<tr class="odd">
+<td>B8A</td>
+<td>Vegetation Red Edge</td>
+<td>20 m</td>
+<td>865</td>
+</tr>
+<tr class="even">
+<td>B09</td>
+<td>Water Vapour</td>
+<td>60 m</td>
+<td>945</td>
+</tr>
+<tr class="odd">
+<td>B11</td>
+<td>SWIR 1</td>
+<td>20 m</td>
+<td>1610</td>
+</tr>
+<tr class="even">
+<td>B12</td>
+<td>SWIR 2</td>
+<td>20 m</td>
+<td>2190</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute a simple ratio, NIR/RED</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sr <span class="ot">&lt;-</span> b8<span class="sc">/</span>b4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the simple ratio</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sr,<span class="at">col =</span> <span class="fu">gray</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">100</span><span class="sc">/</span><span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="queries_files/figure-html/Select data based on location-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="band-math_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="co"># Select countries within Eastern Africa</span></span>
-<span id="cb30-2"><a href="#cb30-2"></a>east_africa <span class="ot">&lt;-</span> <span class="fu">filter</span>(africa, SUBREGION <span class="sc">==</span> <span class="st">'Eastern Africa'</span>)</span>
-<span id="cb30-3"><a href="#cb30-3"></a></span>
-<span id="cb30-4"><a href="#cb30-4"></a><span class="co"># Plot East African countries</span></span>
-<span id="cb30-5"><a href="#cb30-5"></a><span class="fu">plot</span>(east_africa<span class="sc">$</span>geometry)</span>
-<span id="cb30-6"><a href="#cb30-6"></a></span>
-<span id="cb30-7"><a href="#cb30-7"></a><span class="co"># Select and plot all eastern African cities</span></span>
-<span id="cb30-8"><a href="#cb30-8"></a>east_cities <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(<span class="at">x =</span> cities, <span class="at">y=</span>east_africa)</span>
-<span id="cb30-9"><a href="#cb30-9"></a></span>
-<span id="cb30-10"><a href="#cb30-10"></a><span class="fu">plot</span>(east_cities<span class="sc">$</span>geometry, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="st">'blue'</span>, <span class="at">pch=</span><span class="dv">16</span>)</span>
-<span id="cb30-11"><a href="#cb30-11"></a></span>
-<span id="cb30-12"><a href="#cb30-12"></a><span class="fu">plot</span>(cities<span class="sc">$</span>geometry, <span class="at">add=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the image, lighter tones represent areas with denser vegetation. The legend in the plot displays higher values with lighter colors and lower values with darker colors.</p>
+<p>Confirm the vegetation enhancement by plotting a false color composite. In a false color composite, regions with denser vegetation appear darker red, while urban areas and bare soil appear gray or tan, and water bodies are shown in shades of blue or black.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>s2_fcc <span class="ot">&lt;-</span> <span class="fu">c</span>(b8, b4, b3)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sr,<span class="at">col =</span> <span class="fu">gray</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">100</span><span class="sc">/</span><span class="dv">100</span>), <span class="at">main=</span><span class="st">"Simple Ratio (NIR/RED)"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plotRGB</span>(s2_fcc, <span class="at">stretch=</span><span class="st">"hist"</span>, <span class="at">main=</span><span class="st">"False Color Composite"</span>) </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="st">"False Color Composite"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="queries_files/figure-html/Select data based on location-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="band-math_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+</section>
+<section id="normalised-difference-vegetation-index-ndvi" class="level3">
+<h3 class="anchored" data-anchor-id="normalised-difference-vegetation-index-ndvi">2. Normalised Difference Vegetation Index (NDVI)</h3>
+<p>NDVI is one of the commonly used spectral indices used for vegetation health monitoring.</p>
+<p>NDVI is based on the Based on the relationship between red and near-infrared wavelengths. Chlorophyll strongly absorbs visible (red). Plant structure strongly reflects near-infrared.</p>
+<p>NDVI is calculated: <span class="math display">\[
+NDVI = \frac{NIR - Red}{NIR + Red}
+\]</span>’</p>
+<p>Where:<br>
+- <strong>NIR</strong> = Near Infrared band<br>
+- <strong>Red</strong> = Red band</p>
+<p>NDVI values range from -1.0 to 1.0. Negative values to 0 mean no green leaves. Values close to 1 indicate the highest possible density of green leaves.</p>
+<p>For Sentinel-2: <span class="math display">\[
+NDVI = \frac{b8 - b4}{b8 + b4}
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ndvi <span class="ot">&lt;-</span> ((b8<span class="sc">-</span>b4)<span class="sc">/</span>(b8 <span class="sc">+</span> b4))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Plot ndvi map</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ndvi,<span class="at">col =</span> <span class="fu">gray</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">100</span><span class="sc">/</span><span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="band-math_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The NDVI image produces pixel values that range between –1 and +1. Values approaching +1 appear brighter and typically indicate denser, healthier vegetation. In this particular image, the values span from –0.10 to +0.6, as there are no pixels representing the extreme ends of the full NDVI range.</p>
+<p>The gray scale image doesn’t look impressing. You will use a custom palette commonly used for visualising NDVI.</p>
+<section id="create-color-palette" class="level4">
+<h4 class="anchored" data-anchor-id="create-color-palette">Create color palette</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ndviPalette <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'#FFFFFF'</span>, <span class="st">'#CE7E45'</span>, <span class="st">'#DF923D'</span>, <span class="st">'#F1B555'</span>, <span class="st">'#FCD163'</span>, <span class="st">'#99B718'</span>,<span class="st">'#74A901'</span>, <span class="st">'#66A000'</span>, <span class="st">'#529400'</span>, <span class="st">'#3E8601'</span>, <span class="st">'#207401'</span>, <span class="st">'#056201'</span>, <span class="st">'#004C00'</span>, <span class="st">'#023B01'</span>, <span class="st">'#012E01'</span>, <span class="st">'#011D01'</span>, <span class="st">'#011301'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ndvi, <span class="at">col=</span>ndviPalette, <span class="at">main=</span><span class="st">"Blantyre City NDVI"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="band-math_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>What if we used tmap for the final NDVI map?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ndviMap <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(ndvi) <span class="sc">+</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.scale =</span> <span class="fu">tm_scale_continuous</span>(<span class="at">values =</span> ndviPalette),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">"NDVI"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Blantyre City NDVI (24 October 2025)"</span>, <span class="at">color =</span> <span class="st">"#011D01"</span>) <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_credits</span>(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Data Source: Copernicus Browser"</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.5</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_credits</span>(</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Date: 19 February 2026"</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>),</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.5</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_credits</span>(</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Author: Your Fullname"</span>,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">fontface =</span> <span class="st">"italic"</span>,</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>),</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.5</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_graticules</span>(</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">lines =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"grey"</span>,</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels.size =</span> <span class="fl">0.7</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the map</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>ndviMap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="band-math_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To save the map,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#tmap_save(ndviMap, "Blantyre City NDVI.png")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="modified-normalised-difference-water-index-mndwi" class="level3">
+<h3 class="anchored" data-anchor-id="modified-normalised-difference-water-index-mndwi">3. Modified Normalised Difference Water Index (MNDWI)</h3>
+<p>The Modified Normalized Difference Water Index (MNDWI) utilizes the green and SWIR bands to enhance the detection of open water features, while reducing the influence of built-up areas that can sometimes appear similar to water in other indices.</p>
+<p><span class="math display">\[
+MNDWI = \frac{Green - SWIR}{Green + SWIR}
+\]</span></p>
+<p>Where:<br>
+- <strong>Green</strong> = pixel values from the green band<br>
+- <strong>SWIR</strong> = pixel values from the short-wave infrared band</p>
+<p>In case of Sentinel-2 imagery, <span class="math display">\[
+MNDWI = \frac{b3 - b11}{b3 + b11}
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute MNDWI</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>b3_20m <span class="ot">&lt;-</span> <span class="fu">resample</span>(b3, b11, <span class="at">method=</span><span class="st">"bilinear"</span>) <span class="co"># Resample b3 to 20m resolution of b11</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>mndwi <span class="ot">&lt;-</span> ((b3_20m <span class="sc">-</span> b11)<span class="sc">/</span>(b3_20m <span class="sc">+</span> b11))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot MNDWI</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mndwi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="band-math_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Open water features typically have positive values, while built-up land, soil, and vegetation produce negative values, making them easier to distinguish.</p>
+<p>MNDWI can be used for mapping flood extent and to detect surface water. Positive values indicate high probability of water while negative values indicate soil, vegetation, or built-up areas.</p>
+<p>We would create a better map for MNDWI using tmap:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define colors</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>mndwiParams <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"brown"</span>, <span class="st">"white"</span>, <span class="st">"blue"</span>, <span class="st">"skyblue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Define the map object</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>mndwiMap <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(mndwi) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">col.scale =</span> <span class="fu">tm_scale_continuous</span>(<span class="at">values =</span> mndwiParams),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">col.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">"MNDWI"</span>)) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Blantyre City MNDWI (24 October 2025)"</span>, <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_credits</span>(</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Data Source: Copernicus Browser"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.5</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_credits</span>(<span class="st">"Date: 19 February 2026"</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>),</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_credits</span>(</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Author: Your name"</span>,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">fontface =</span> <span class="st">"italic"</span>,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>),</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.5</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_grid</span>(<span class="at">lines =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_graticules</span>(<span class="at">lines =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>                <span class="at">col =</span> <span class="st">"grey"</span>,</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>                <span class="at">labels.size =</span> <span class="fl">0.7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Display the map</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>mndwiMap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="band-math_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To save the map,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#tmap_save(mndwiMap, "Blantyre City MNDWI.png")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
