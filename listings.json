@@ -3,14 +3,13 @@
     "listing": "/tutorials/index.html",
     "items": [
       "/tutorials/queries.html",
-      "/tutorials/band-math.html",
+      "/tutorials/about.html",
       "/tutorials/geometric-operations.html",
       "/tutorials/getting-started.html",
       "/tutorials/install-packages.html",
       "/tutorials/install-r.html",
       "/tutorials/make-map.html",
       "/tutorials/r-basics.html",
-      "/tutorials/visualise_s2.html",
       "/tutorials/map-projections.html"
     ]
   }
